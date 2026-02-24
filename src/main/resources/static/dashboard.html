@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>CyberLearn - Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .dashboard-layout { display: flex; min-height: 100vh; }
+        .sidebar { width: 260px; height: 100vh; position: fixed; left: 0; top: 0; padding: 30px 20px; display: flex; flex-direction: column; justify-content: space-between; }
+        .main-container { margin-left: 300px; padding: 40px; flex: 1; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .stat-card { padding: 20px; border-left: 4px solid var(--primary); }
+        .quiz-list-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; margin-bottom: 10px; border: 1px solid var(--border); border-radius: 8px; transition: 0.3s; }
+        .quiz-list-item:hover { background: rgba(59, 130, 246, 0.1); border-color: var(--primary); }
+    </style>
+</head>
+<body>
+    <div class="dashboard-layout">
+        <aside class="sidebar glass-panel">
+            <div>
+                <h2 style="color: var(--primary); letter-spacing: 2px;">🛡️ CYBERLEARN</h2>
+                <nav style="margin-top: 40px;">
+                    <p style="color: var(--primary);"><strong>● Dashboard</strong></p>
+                    <p style="opacity: 0.7; cursor: pointer;">📖 Meus Cursos</p>
+                    <p style="opacity: 0.7; cursor: pointer;">🏆 Ranking</p>
+                </nav>
+            </div>
+            <button onclick="logout()" style="background: #ef4444; width: 100%;">Sair</button>
+        </aside>
+
+        <main class="main-container">
+            <header>
+                <h1>Bem-vindo, <span id="userName" style="color: var(--accent);">Recruta</span>!</h1>
+                <p style="opacity: 0.6;">Estado do Sistema: <span style="color: var(--accent);">Ligado</span></p>
+            </header>
+
+            <div class="stats-grid">
+                <div class="stat-card glass-panel">
+                    <small>Progresso Atual</small>
+                    <h2 id="userXP">1250 XP</h2>
+                </div>
+                <div class="stat-card glass-panel" style="border-left-color: var(--accent);">
+                    <small>Módulos</small>
+                    <h2>2 / 8</h2>
+                </div>
+                <div class="stat-card glass-panel">
+                    <small>Ranking</small>
+                    <h2>#14</h2>
+                </div>
+            </div>
+
+            <section class="glass-panel" style="padding: 30px;">
+                <h3 style="margin-top: 0; color: var(--primary);">🚀 Desafios Disponíveis</h3>
+                <div id="listaQuizzes">
+                    <p>A carregar desafios do terminal...</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Verificação de segurança (RF02)
+        const nome = localStorage.getItem('userName');
+        if (!nome) window.location.href = "index.html";
+        document.getElementById('userName').innerText = nome;
+
+        async function carregarQuizzes() {
+            try {
+                const res = await fetch('/api/quizzes');
+                const quizzes = await res.json();
+                const container = document.getElementById('listaQuizzes');
+                container.innerHTML = '';
+
+                quizzes.forEach(q => {
+                    container.innerHTML += `
+                        <div class="quiz-list-item">
+                            <div>
+                                <strong>${q.titulo}</strong>
+                                <br><small style="color: var(--accent);">+${q.pontosRecompensa} XP</small>
+                            </div>
+                            <button onclick="irParaQuiz(${q.id})" style="width: auto; padding: 8px 20px;">Iniciar</button>
+                        </div>
+                    `;
+                });
+            } catch (err) {
+                document.getElementById('listaQuizzes').innerText = "Erro ao ligar ao servidor de dados.";
+            }
+        }
+
+        function irParaQuiz(id) {
+            window.location.href = `quiz.html?id=${id}`;
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = "index.html";
+        }
+
+        carregarQuizzes();
+    </script>
+</body>
+</html>

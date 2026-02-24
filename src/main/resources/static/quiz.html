@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>CyberLearn - Desafio</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body style="padding: 40px; display: flex; justify-content: center;">
+    <div class="glass-panel" style="max-width: 800px; width: 100%; padding: 40px;">
+        <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <h2 id="quizTitle" style="margin: 0; color: var(--primary);">A carregar desafio...</h2>
+            <button onclick="window.location.href='dashboard.html'" style="width: auto; background: #334155;">Cancelar</button>
+        </header>
+
+        <div id="questionsContainer">
+            </div>
+
+        <button id="btnSubmeter" onclick="enviarRespostas()" style="margin-top: 30px; background: var(--accent); color: #000; display: none;">
+            Finalizar e Submeter Respostas
+        </button>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const quizId = urlParams.get('id');
+
+        async function carregarConteudo() {
+            if (!quizId) return window.location.href = "dashboard.html";
+
+            try {
+                const res = await fetch(`/api/quizzes/${quizId}`);
+                const quiz = await res.json();
+                
+                document.getElementById('quizTitle').innerText = quiz.titulo;
+                const container = document.getElementById('questionsContainer');
+                container.innerHTML = '';
+
+                quiz.perguntas.forEach((p, i) => {
+                    container.innerHTML += `
+                        <div class="glass-panel" style="margin-bottom: 20px; padding: 20px; border-left: 4px solid var(--primary);">
+                            <p><strong>${i + 1}. ${p.enunciado}</strong></p>
+                            <div style="display: grid; gap: 10px; margin-top: 10px;">
+                                <label style="cursor:pointer"><input type="radio" name="q${p.id}" value="A"> ${p.opcaoA}</label>
+                                <label style="cursor:pointer"><input type="radio" name="q${p.id}" value="B"> ${p.opcaoB}</label>
+                                <label style="cursor:pointer"><input type="radio" name="q${p.id}" value="C"> ${p.opcaoC}</label>
+                                <label style="cursor:pointer"><input type="radio" name="q${p.id}" value="D"> ${p.opcaoD}</label>
+                            </div>
+                        </div>
+                    `;
+                });
+                document.getElementById('btnSubmeter').style.display = 'block';
+            } catch (err) {
+                alert("Erro ao carregar perguntas.");
+            }
+        }
+
+        async function enviarRespostas() {
+            const container = document.getElementById('questionsContainer');
+            const radiogroups = container.querySelectorAll('div.glass-panel');
+            const respostas = [];
+
+            radiogroups.forEach(group => {
+                const checked = group.querySelector('input[type="radio"]:checked');
+                respostas.push(checked ? checked.value : "");
+            });
+
+            if (respostas.includes("")) {
+                alert("Por favor, responde a todas as perguntas antes de submeter.");
+                return;
+            }
+
+            const res = await fetch(`/api/quizzes/${quizId}/submeter`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(respostas)
+            });
+
+            const msg = await res.text();
+            alert(msg);
+            window.location.href = "dashboard.html";
+        }
+
+        carregarConteudo();
+    </script>
+</body>
+</html>

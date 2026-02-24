@@ -1,0 +1,175 @@
+:root {
+    --bg-dark: #0f172a;
+    --card-bg: #1e293b;
+    --primary: #3b82f6;
+    --accent: #00ff88;
+    --text-main: #f8fafc;
+    --text-dim: #94a3b8;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Cartões de Login e Registo */
+.auth-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card {
+    background: var(--card-bg);
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid #334155;
+}
+
+h2 { color: var(--accent); text-align: center; margin-bottom: 1.5rem; }
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    background: #0f172a;
+    border: 1px solid #334155;
+    color: white;
+    border-radius: 8px;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    filter: brightness(1.2);
+    box-shadow: 0 0 15px var(--primary);
+}
+
+:root {
+    --bg: #030712;
+    --glass: rgba(17, 24, 39, 0.7);
+    --border: rgba(255, 255, 255, 0.1);
+    --primary: #3b82f6; /* Azul Tech */
+    --accent: #10b981;  /* Verde Cyber */
+    --text: #f3f4f6;
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    background: radial-gradient(circle at top right, #1e1b4b, var(--bg));
+    color: var(--text);
+    margin: 0;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* Efeito de Vidro */
+.glass-panel {
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+}
+
+/* Sidebar Estilizada */
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.nav-link {
+    padding: 12px 15px;
+    margin: 8px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-link:hover {
+    background: rgba(59, 130, 246, 0.2);
+    color: var(--primary);
+}
+
+.nav-active {
+    background: var(--primary);
+    color: white;
+}
+
+/* Área Principal */
+.main-container {
+    margin-left: 280px;
+    padding: 40px;
+}
+
+/* Cards de Status (XP e Progresso) */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    padding: 25px;
+    text-align: left;
+}
+
+.progress-container {
+    background: rgba(0,0,0,0.3);
+    height: 8px;
+    border-radius: 4px;
+    margin-top: 15px;
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    height: 100%;
+    border-radius: 4px;
+    box-shadow: 0 0 10px var(--primary);
+}
+
+/* Botões Estilo Cyber */
+button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+    transform: translateY(-2px);
+}

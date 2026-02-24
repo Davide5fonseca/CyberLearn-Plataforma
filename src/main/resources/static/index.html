@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>CyberLearn - Login</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body style="display:flex; justify-content:center; align-items:center; height:100vh;">
+    <div class="card">
+        <h2>🛡️ CyberLearn</h2>
+        <input type="email" id="email" placeholder="E-mail">
+        <input type="password" id="pass" placeholder="Palavra-passe">
+        <button onclick="executarLogin()">Entrar</button>
+        <p>Ainda não tens conta? <a href="registo.html">Regista-te aqui</a></p>
+    </div>
+
+    <script>
+        async function executarLogin() {
+            const res = await fetch('/api/usuarios/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email.value, passwordHash: pass.value })
+            });
+
+            if (res.ok) {
+                const user = await res.json();
+                // Guardamos os dados na sessão do navegador
+                localStorage.setItem('userName', user.nome);
+                localStorage.setItem('userPerfil', user.perfil);
+                // REDIRECIONAMENTO PARA O DASHBOARD
+                window.location.href = "dashboard.html";
+            } else {
+                alert("Falha no login. Verifica as tuas credenciais.");
+            }
+        }
+    </script>
+</body>
+</html>
