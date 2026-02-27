@@ -7,6 +7,7 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <script>
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -17,9 +18,10 @@
     </script>
 
     <style>
-        /* Transições suaves para mudança de tema e hover */
         * { transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.3s ease; }
         .modal-open { overflow: hidden; }
+        /* Estilo para garantir que o PDF ignore o modo dark e saia legível */
+        .pdf-export { background: white !important; color: black !important; padding: 20px; }
     </style>
 </head>
 
@@ -48,7 +50,6 @@
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-            
             <div onclick="abrirModulo('redes')" class="group bg-white dark:bg-gray-800 p-8 rounded-[3rem] border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-2xl hover:-translate-y-2 cursor-pointer relative overflow-hidden">
                 <div class="bg-pink-100 dark:bg-pink-900/30 text-pink-600 p-5 rounded-2xl w-fit mb-6 group-hover:scale-110">
                     <i class="fas fa-share-alt text-3xl"></i>
@@ -92,23 +93,27 @@
                     Ler Módulo Completo <i class="fas fa-chevron-right ml-2 group-hover:translate-x-1"></i>
                 </div>
             </div>
-
         </div>
     </main>
 
     <div id="moduloModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
         <div class="bg-white dark:bg-gray-800 w-full max-w-3xl rounded-[3.5rem] shadow-2xl overflow-hidden transform transition-all scale-95 opacity-0 duration-300 border border-gray-200 dark:border-gray-700" id="modalContent">
             <div class="p-10 md:p-16 relative max-h-[90vh] overflow-y-auto">
-                
                 <button onclick="fecharModulo()" class="absolute top-10 right-10 text-gray-400 hover:text-red-500 text-3xl transition">
                     <i class="fas fa-times"></i>
                 </button>
 
                 <div id="modalBody"></div>
 
-                <button onclick="fecharModulo()" class="mt-12 w-full bg-blue-600 hover:bg-blue-700 text-white py-5 rounded-2xl font-black text-lg shadow-lg shadow-blue-500/30 transform active:scale-95 transition-all">
-                    Entendi, Proteger Agora!
-                </button>
+                <div class="mt-12 space-y-4">
+                    <button onclick="gerarPDF()" class="w-full border-2 border-cyan-500 text-cyan-600 dark:text-cyan-400 py-4 rounded-2xl font-black text-lg hover:bg-cyan-500 hover:text-white transition flex items-center justify-center gap-2">
+                        <i class="fas fa-file-pdf"></i> Descarregar em PDF
+                    </button>
+
+                    <button onclick="fecharModulo()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-black text-lg shadow-lg shadow-blue-500/30 transform active:scale-95 transition-all">
+                        Entendi, Proteger Agora!
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -117,114 +122,80 @@
         <p class="text-xs text-gray-400 uppercase tracking-[0.3em] font-black">&copy; 2026 CyberLearn - Davide Fonseca</p>
     </footer>
 
-    <script>
-        // Objeto com as informações completas de cada módulo
-        const conteudos = {
-            redes: {
-                titulo: "Redes Sociais e Pegada Digital 📱",
-                texto: `
-                    <div class="space-y-6 text-gray-600 dark:text-gray-300 leading-relaxed text-lg">
-                        <p>Cada vez que publicas algo, deixas uma <strong class="text-gray-900 dark:text-white">Pegada Digital</strong>. Este rasto pode ser usado por empresas, universidades ou até criminosos.</p>
-                        
-                        <div class="bg-pink-50 dark:bg-pink-900/20 p-6 rounded-3xl border-l-8 border-pink-500">
-                            <h4 class="font-black text-pink-700 dark:text-pink-400 mb-4 uppercase tracking-wider text-sm">Checklist de Privacidade:</h4>
-                            <ul class="list-disc ml-5 space-y-3">
-                                <li><strong>Contas Privadas:</strong> Garante que apenas amigos aprovados veem o teu conteúdo.</li>
-                                <li><strong>Localização:</strong> Nunca publiques fotos que mostrem a tua escola ou casa com a localização ativa.</li>
-                                <li><strong>Desconhecidos:</strong> Aceitar estranhos é dar-lhes acesso ao teu número e rotinas pessoais.</li>
-                            </ul>
-                        </div>
-                        <p class="font-bold italic">Lógica Cyber: "Se não queres que os teus avós vejam, não publiques na internet."</p>
-                    </div>
-                `
-            },
-            bullying: {
-                titulo: "Combate ao Cyberbullying 🚫",
-                texto: `
-                    <div class="space-y-6 text-gray-600 dark:text-gray-300 leading-relaxed text-lg">
-                        <p>O cyberbullying utiliza ferramentas digitais para assediar e humilhar. É um crime com consequências graves.</p>
-                        
-                        <div class="bg-purple-50 dark:bg-purple-900/20 p-6 rounded-3xl border-l-8 border-purple-500">
-                            <h4 class="font-black text-purple-700 dark:text-purple-400 mb-4 uppercase tracking-wider text-sm">Como agir imediatamente:</h4>
-                            <ul class="list-disc ml-5 space-y-3">
-                                <li><strong>Não respondas:</strong> O agressor alimenta-se da tua reação. Mantém a calma e o silêncio.</li>
-                                <li><strong>Faz Print:</strong> Guarda evidências de todas as mensagens e comentários abusivos.</li>
-                                <li><strong>Bloqueia e Reporta:</strong> Usa as ferramentas das apps para cortar o contacto permanentemente.</li>
-                            </ul>
-                        </div>
-                        <p class="font-black text-gray-900 dark:text-white uppercase text-sm">Falar com um adulto de confiança é o passo mais corajoso que podes dar.</p>
-                    </div>
-                `
-            },
-            phishing: {
-                titulo: "Cuidado com o Isco! (Phishing) 🎣",
-                texto: `
-                    <div class="space-y-6 text-gray-600 dark:text-gray-300 leading-relaxed text-lg">
-                        <p>O Phishing é uma técnica de engano para roubar as tuas passwords ou dados bancários.</p>
-                        
-                        
+<script>
+    const conteudos = {
+        redes: {
+            titulo: "Redes Sociais e Pegada Digital 📱",
+            texto: "<div class='space-y-6 text-gray-600 dark:text-gray-300 leading-relaxed text-lg'><p>Cada vez que publicas algo, deixas uma <strong class='text-gray-900 dark:text-white'>Pegada Digital</strong>. Este rasto pode durar décadas.</p><div class='bg-pink-50 dark:bg-pink-900/20 p-6 rounded-3xl border-l-8 border-pink-500'><h4 class='font-black text-pink-700 dark:text-pink-400 mb-4 uppercase tracking-wider text-sm'>Checklist de Privacidade:</h4><ul class='list-disc ml-5 space-y-3'><li><strong>Contas Privadas:</strong> Garante que apenas amigos aprovados veem o teu conteúdo.</li><li><strong>Localização:</strong> Nunca publiques fotos que mostrem a tua escola ou casa.</li><li><strong>Desconhecidos:</strong> Aceitar estranhos dá-lhes acesso ao teu número pessoal.</li></ul></div></div>"
+        },
+        bullying: {
+            titulo: "Combate ao Cyberbullying 🚫",
+            texto: "<div class='space-y-6 text-gray-600 dark:text-gray-300 leading-relaxed text-lg'><p>O cyberbullying utiliza ferramentas digitais para assediar e humilhar. É um crime grave.</p><div class='bg-purple-50 dark:bg-purple-900/20 p-6 rounded-3xl border-l-8 border-purple-500'><h4 class='font-black text-purple-700 dark:text-purple-400 mb-4 uppercase tracking-wider text-sm'>Como agir:</h4><ul class='list-disc ml-5 space-y-3'><li><strong>Não respondas:</strong> O agressor alimenta-se da tua reação.</li><li><strong>Faz Print:</strong> Guarda evidências de todas as mensagens abusivas.</li><li><strong>Bloqueia e Reporta:</strong> Corta o contacto permanentemente.</li></ul></div></div>"
+        },
+        phishing: {
+            titulo: "Cuidado com o Isco! (Phishing) 🎣",
+            texto: "<div class='space-y-6 text-gray-600 dark:text-gray-300 leading-relaxed text-lg'><p>O Phishing é uma técnica de engano para roubar as tuas passwords.</p><div class='bg-cyan-50 dark:bg-cyan-900/20 p-6 rounded-3xl border-l-8 border-cyan-500'><h4 class='font-black text-cyan-700 dark:text-cyan-400 mb-4 uppercase tracking-wider text-sm'>Sinais de Burlas:</h4><ul class='list-disc ml-5 space-y-3'><li><strong>Urgência Falsa:</strong> Mensagens a dizer que a conta será suspensa.</li><li><strong>Erros no Link:</strong> Verifica sempre o URL oficial.</li><li><strong>Anexos:</strong> Nunca abras ficheiros .zip de desconhecidos.</li></ul></div></div>"
+        },
+        passwords: {
+            titulo: "Passwords Inquebráveis 🔑",
+            texto: "<div class='space-y-6 text-gray-600 dark:text-gray-300 leading-relaxed text-lg'><p>Passwords fracas são a maior causa de contas hackeadas.</p><div class='bg-blue-50 dark:bg-blue-900/20 p-6 rounded-3xl border-l-8 border-blue-600'><h4 class='font-black text-blue-700 dark:text-blue-400 mb-4 uppercase tracking-wider text-sm'>O Teu Escudo:</h4><ul class='list-disc ml-5 space-y-3'><li><strong>Passphrases:</strong> Usa frases longas como 'OMeuCaoComeSardinhas!'.</li><li><strong>MFA (2FA):</strong> Ativa a autenticação de 2 fatores sempre.</li><li><strong>Passwords Únicas:</strong> Nunca uses a mesma password em todo o lado.</li></ul></div></div>"
+        }
+    };
 
-                        <div class="bg-cyan-50 dark:bg-cyan-900/20 p-6 rounded-3xl border-l-8 border-cyan-500">
-                            <h4 class="font-black text-cyan-700 dark:text-cyan-400 mb-4 uppercase tracking-wider text-sm">Sinais de Burlas:</h4>
-                            <ul class="list-disc ml-5 space-y-3">
-                                <li><strong>Urgência Falsa:</strong> Emails a dizer "A tua conta será suspensa agora" são quase sempre falsos.</li>
-                                <li><strong>Erros no Link:</strong> Verifica o URL. "netflix-premium.pt" não é o site oficial da Netflix.</li>
-                                <li><strong>Anexos Estranhos:</strong> Nunca abras ficheiros .zip ou .exe enviados por desconhecidos.</li>
-                            </ul>
-                        </div>
-                    </div>
-                `
+    function abrirModulo(id) {
+        const modal = document.getElementById('moduloModal');
+        const content = document.getElementById('modalContent');
+        const body = document.getElementById('modalBody');
+        const info = conteudos[id];
+
+        body.innerHTML = '<div class="mb-2 uppercase tracking-[0.2em] text-xs font-black text-blue-600 dark:text-blue-400">CyberLearn Academy</div>' +
+                        '<h2 class="text-4xl font-black mb-8 text-gray-900 dark:text-white leading-tight">' + info.titulo + '</h2>' +
+                        info.texto;
+
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            content.classList.remove('scale-95', 'opacity-0');
+            content.classList.add('scale-100', 'opacity-100');
+        }, 10);
+        document.body.classList.add('modal-open');
+    }
+
+    function fecharModulo() {
+        const modal = document.getElementById('moduloModal');
+        const content = document.getElementById('modalContent');
+        content.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            document.body.classList.remove('modal-open');
+        }, 300);
+    }
+
+    // NOVA FUNÇÃO PARA PDF
+    function gerarPDF() {
+        const elemento = document.getElementById('modalBody');
+        // Capturamos o título atual para o nome do ficheiro
+        const titulo = elemento.querySelector('h2').innerText;
+
+        const opcoes = {
+            margin: [15, 15, 15, 15],
+            filename: `CyberLearn - ${titulo}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { 
+                scale: 2, 
+                useCORS: true,
+                letterRendering: true
             },
-            passwords: {
-                titulo: "Passwords Inquebráveis 🔑",
-                texto: `
-                    <div class="space-y-6 text-gray-600 dark:text-gray-300 leading-relaxed text-lg">
-                        <p>Passwords fracas são a maior causa de contas hackeadas no mundo.</p>
-                        
-                        <div class="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-3xl border-l-8 border-blue-600">
-                            <h4 class="font-black text-blue-700 dark:text-blue-400 mb-4 uppercase tracking-wider text-sm">O Teu Novo Escudo:</h4>
-                            <ul class="list-disc ml-5 space-y-3">
-                                <li><strong>Passphrases:</strong> Usa frases longas como "O-Sol-Brilha-Mais-Em-2026!". São impossíveis de quebrar.</li>
-                                <li><strong>MFA (2FA):</strong> Ativa a autenticação de 2 fatores em todos os teus jogos e redes sociais.</li>
-                                <li><strong>Passwords Únicas:</strong> Nunca uses a mesma password para o email e para o Discord.</li>
-                            </ul>
-                        </div>
-                        <p class="font-bold">Um gestor de passwords pode ajudar-te a criar e guardar códigos complexos em segurança.</p>
-                    </div>
-                `
-            }
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
-        function abrirModulo(id) {
-            const modal = document.getElementById('moduloModal');
-            const content = document.getElementById('modalContent');
-            const body = document.getElementById('modalBody');
-            const info = conteudos[id];
-
-            body.innerHTML = `
-                <div class="mb-2 uppercase tracking-[0.2em] text-xs font-black text-blue-600 dark:text-blue-400">CyberLearn Academy</div>
-                <h2 class="text-4xl font-black mb-8 text-gray-900 dark:text-white leading-tight">\${info.titulo}</h2>
-                \${info.texto}
-            \`;
-
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                content.classList.remove('scale-95', 'opacity-0');
-                content.classList.add('scale-100', 'opacity-100');
-            }, 10);
-            document.body.classList.add('modal-open');
-        }
-
-        function fecharModulo() {
-            const modal = document.getElementById('moduloModal');
-            const content = document.getElementById('modalContent');
-            
-            content.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                document.body.classList.remove('modal-open');
-            }, 300);
-        }
-    </script>
+        // Adicionamos uma classe temporária para garantir fundo branco no PDF
+        elemento.classList.add('pdf-export');
+        
+        html2pdf().set(opcoes).from(elemento).save().then(() => {
+            // Removemos a classe após o download
+            elemento.classList.remove('pdf-export');
+        });
+    }
+</script>
 </body>
 </html>

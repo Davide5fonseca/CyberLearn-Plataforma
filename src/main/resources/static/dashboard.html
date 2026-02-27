@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <script>
-        // Configuração inicial do tema
+        // Configuração inicial do tema (Dark/Light)
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         } else {
@@ -27,7 +27,6 @@
             }
         }
 
-        // Função para limpar os dados e sair
         function executarLogout() {
             localStorage.removeItem('userPoints');
             localStorage.removeItem('userName');
@@ -37,11 +36,12 @@
     </script>
 
     <style>
+        /* Transições suaves para mudança de tema e interações */
         * { transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease; }
     </style>
 </head>
 
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans antialiased">
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans antialiased min-h-screen">
 
     <nav class="bg-white dark:bg-gray-800 shadow-sm py-4 px-8 flex justify-between items-center sticky top-0 z-50 border-b border-transparent dark:border-gray-700">
         <div class="flex items-center gap-3">
@@ -49,8 +49,8 @@
                 <i class="fas fa-shield-alt text-xl"></i>
             </div>
             <div>
-                <h1 class="font-bold text-lg leading-tight">CyberLearn</h1>
-                <p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-wider">Plataforma de Aprendizagem</p>
+                <h1 class="font-bold text-lg leading-tight text-gray-900 dark:text-white">CyberLearn</h1>
+                <p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-wider font-bold">Plataforma de Aprendizagem</p>
             </div>
         </div>
         
@@ -66,26 +66,31 @@
                 <div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 px-4 py-2 rounded-full text-sm font-medium">
                     <i class="far fa-star text-yellow-500"></i> Nível 1
                 </div>
-                <div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 px-4 py-2 rounded-full text-sm font-medium">
+                <div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 px-4 py-2 rounded-full text-sm font-medium border-l-4 border-blue-500">
                     <i class="fas fa-coins text-blue-500"></i> <span id="nav-points">0</span> pts
                 </div>
             </div>
 
-            <button onclick="executarLogout()" class="text-gray-400 hover:text-red-500 p-2 transition">
+            <button onclick="executarLogout()" title="Sair" class="text-gray-400 hover:text-red-500 p-2 transition-colors">
                 <i class="fas fa-sign-out-alt text-lg"></i>
             </button>
         </div>
     </nav>
 
     <main class="max-w-6xl mx-auto px-6 py-12">
-        <header class="mb-12">
-            <h2 id="welcome-text" class="text-4xl font-extrabold mb-2 tracking-tight">Olá, Davide Fonseca! 👋</h2>
-            <p class="text-gray-500 dark:text-gray-400 text-lg">Acompanha o teu progresso e continua a aprender</p>
+        <header class="mb-12 flex justify-between items-center">
+            <div>
+                <h2 id="welcome-text" class="text-4xl font-extrabold mb-2 tracking-tight text-gray-900 dark:text-white leading-tight font-sans">Olá, Davide Fonseca! 👋</h2>
+                <p class="text-gray-500 dark:text-gray-400 text-lg">Acompanha o teu progresso e continua a aprender</p>
+            </div>
+            <a href="perfil.html" title="Ver Perfil" class="inline-block bg-white dark:bg-gray-800 p-4 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:-translate-y-1 transition-all group">
+                <i class="fas fa-user-circle text-gray-400 group-hover:text-blue-600 text-2xl"></i>
+            </a>
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             
-            <section class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <section class="bg-white dark:bg-gray-800 p-8 rounded-[2.5rem] shadow-sm border border-gray-100 dark:border-gray-700">
                 <div class="flex items-center gap-3 mb-8">
                     <div class="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
                         <i class="fas fa-chart-line text-blue-600 dark:text-blue-400"></i>
@@ -97,7 +102,7 @@
                     <div>
                         <div class="flex justify-between text-sm font-medium mb-3">
                             <span class="text-gray-500 dark:text-gray-400">Módulos completos</span>
-                            <span class="text-blue-600 dark:text-blue-400">0/6</span>
+                            <span class="text-blue-600 dark:text-blue-400">0/4</span>
                         </div>
                         <div class="w-full bg-gray-100 dark:bg-gray-700 h-3 rounded-full overflow-hidden">
                             <div id="progress-bar-fill" class="bg-blue-600 h-full w-[0%] transition-all duration-1000"></div>
@@ -108,21 +113,21 @@
                     <div class="grid grid-cols-3 gap-4 pt-4 text-center">
                         <div class="p-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-transparent dark:border-gray-700">
                             <p class="text-2xl font-black text-blue-600">1</p>
-                            <p class="text-[10px] uppercase text-gray-400 font-bold">Nível</p>
+                            <p class="text-[10px] uppercase text-gray-400 font-bold tracking-tighter">Nível</p>
                         </div>
                         <div class="p-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-transparent dark:border-gray-700">
                             <p id="card-points" class="text-2xl font-black">0</p>
-                            <p class="text-[10px] uppercase text-gray-400 font-bold">Pontos</p>
+                            <p class="text-[10px] uppercase text-gray-400 font-bold tracking-tighter">Pontos</p>
                         </div>
                         <div class="p-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-transparent dark:border-gray-700">
-                            <p class="text-2xl font-black">0</p>
-                            <p class="text-[10px] uppercase text-gray-400 font-bold">Medalhas</p>
+                            <p id="card-medals" class="text-2xl font-black">0</p>
+                            <p class="text-[10px] uppercase text-gray-400 font-bold tracking-tighter">Medalhas</p>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col items-center justify-center text-center">
+            <section class="bg-white dark:bg-gray-800 p-8 rounded-[2.5rem] shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col items-center justify-center text-center leading-relaxed">
                 <div class="w-full text-left flex items-center gap-3 mb-8">
                     <div class="p-2 bg-yellow-50 dark:bg-yellow-900/30 rounded-lg text-yellow-600 dark:text-yellow-400">
                         <i class="fas fa-trophy"></i>
@@ -130,52 +135,55 @@
                     <h3 class="font-bold text-xl">Classificação</h3>
                 </div>
                 <div class="py-6">
-                    <i class="fas fa-medal text-5xl text-gray-100 dark:text-gray-700 mb-4"></i>
-                    <p class="text-gray-400 dark:text-gray-500">Ainda não há dados disponíveis</p>
+                    <i class="fas fa-users-viewfinder text-5xl text-gray-100 dark:text-gray-700 mb-4"></i>
+                    <p class="text-gray-400 dark:text-gray-500 font-medium">Top 10 Alunos CyberLearn</p>
+                    <p class="text-[10px] text-gray-300 dark:text-gray-600 mt-2 italic underline decoration-dotted underline-offset-4">Ainda não há dados disponíveis</p>
                 </div>
             </section>
 
-            <section class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <section class="bg-white dark:bg-gray-800 p-8 rounded-[2.5rem] shadow-sm border border-gray-100 dark:border-gray-700">
                 <div class="flex items-center gap-3 mb-8">
                     <div class="p-2 bg-purple-50 dark:bg-purple-900/30 rounded-lg text-purple-600 dark:text-purple-400">
-                        <i class="fas fa-award"></i>
+                        <i class="fas fa-medal"></i>
                     </div>
-                    <h3 class="font-bold text-xl text-center md:text-left">As Tuas Medalhas</h3>
+                    <h3 class="font-bold text-xl">As Tuas Medalhas</h3>
                 </div>
-                <div class="grid grid-cols-4 gap-4 opacity-20">
-                    <div class="aspect-square bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center"><i class="fas fa-lock text-gray-400"></i></div>
-                    <div class="aspect-square bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center"><i class="fas fa-lock text-gray-400"></i></div>
-                    <div class="aspect-square bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center"><i class="fas fa-lock text-gray-400"></i></div>
-                    <div class="aspect-square bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center"><i class="fas fa-lock text-gray-400"></i></div>
+                <div class="grid grid-cols-4 gap-4 opacity-20 grayscale transition-opacity">
+                    <div class="aspect-square bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-600"><i class="fas fa-lock text-gray-400"></i></div>
+                    <div class="aspect-square bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-600"><i class="fas fa-lock text-gray-400"></i></div>
+                    <div class="aspect-square bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-600"><i class="fas fa-lock text-gray-400"></i></div>
+                    <div class="aspect-square bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-600"><i class="fas fa-lock text-gray-400"></i></div>
                 </div>
-                <p class="text-center text-xs text-gray-400 mt-6 italic">Ganha medalhas ao completar quizzes!</p>
+                <p class="text-center text-xs text-gray-400 mt-8 italic">Completa quizzes para desbloquear conquistas!</p>
             </section>
 
             <div class="space-y-6">
-                <section class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 flex justify-between items-center group">
+                <section class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 flex justify-between items-center group hover:shadow-md transition-all">
                     <div class="flex gap-4 items-center">
-                        <div class="bg-blue-100 dark:bg-blue-900/50 p-4 rounded-2xl text-blue-600 dark:text-blue-400 group-hover:scale-110 transition">
+                        <div class="bg-blue-100 dark:bg-blue-900/50 p-4 rounded-2xl text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform">
                             <i class="fas fa-book-open text-xl"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-lg">Explorar Módulos</h3>
-                            <p class="text-xs text-gray-400 mt-1">Descobre novos conteúdos</p>
+                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">Explorar Módulos</h3>
+                            <p class="text-xs text-gray-400 mt-1">Lê os guias de segurança (4 disponíveis)</p>
                         </div>
                     </div>
-                    <button class="bg-gray-900 dark:bg-blue-600 text-white px-5 py-2.5 rounded-xl font-bold hover:shadow-lg transition">Ir</button>
+                    <a href="modulos.html" class="inline-flex items-center justify-center bg-gray-900 dark:bg-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-black dark:hover:bg-blue-500 transition-all shadow-md active:scale-95 whitespace-nowrap">
+                        Ver Todos
+                    </a>
                 </section>
 
-                <section class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 flex justify-between items-center group">
+                <section class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 flex justify-between items-center group hover:shadow-md transition-all">
                     <div class="flex gap-4 items-center">
-                        <div class="bg-emerald-100 dark:bg-emerald-900/50 p-4 rounded-2xl text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition">
+                        <div class="bg-emerald-100 dark:bg-emerald-900/50 p-4 rounded-2xl text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform">
                             <i class="fas fa-brain text-xl"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-lg">Iniciar Quiz</h3>
-                            <p class="text-xs text-gray-400 mt-1">Testa os teus conhecimentos</p>
+                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">Iniciar Quiz</h3>
+                            <p class="text-xs text-gray-400 mt-1">Testa os teus conhecimentos agora</p>
                         </div>
                     </div>
-                    <a href="quiz.html" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2.5 rounded-xl font-bold hover:shadow-lg transition-all active:scale-95">
+                    <a href="quiz.html" class="inline-flex items-center justify-center bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold hover:shadow-lg transition-all active:scale-95 shadow-md whitespace-nowrap">
                         Iniciar
                     </a>
                 </section>
@@ -183,28 +191,27 @@
         </div>
     </main>
 
-    <footer class="mt-20 py-10 text-center">
-        <p class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold">&copy; 2026 CyberLearn - Projecto de Davide Fonseca</p>
+    <footer class="mt-20 py-10 text-center border-t border-gray-100 dark:border-gray-800">
+        <p class="text-[10px] text-gray-400 uppercase tracking-widest font-black">&copy; 2026 CyberLearn - Projecto de Davide Fonseca</p>
     </footer>
 
     <script>
         function atualizarInterface() {
-            // 1. Recuperar dados do LocalStorage
-            const pontos = localStorage.getItem('userPoints') || 0;
+            const pontos = parseInt(localStorage.getItem('userPoints')) || 0;
             const nome = localStorage.getItem('userName') || "Utilizador";
 
-            // 2. Atualizar Nome no Header
             const welcomeHeader = document.getElementById('welcome-text');
             if (welcomeHeader) {
                 welcomeHeader.innerText = `Olá, ${nome}! 👋`;
             }
 
-            // 3. Atualizar Pontos (Navbar e Card)
             document.getElementById('nav-points').innerText = pontos;
             document.getElementById('card-points').innerText = pontos;
 
-            // 4. Atualizar Barra de Progresso
-            // Considerando que 50 pontos = 100% do primeiro módulo
+            const medalhas = Math.floor(pontos / 20);
+            const cardMedals = document.getElementById('card-medals');
+            if(cardMedals) cardMedals.innerText = medalhas;
+
             const percentagem = Math.min((pontos / 50) * 100, 100);
             const progressBar = document.getElementById('progress-bar-fill');
             const progressText = document.getElementById('progress-percent');
@@ -217,9 +224,7 @@
             }
         }
 
-        // Executar assim que a página estiver pronta
         window.onload = atualizarInterface;
     </script>
-
 </body>
 </html>
