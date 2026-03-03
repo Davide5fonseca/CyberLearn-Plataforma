@@ -1,119 +1,199 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CyberLearn - O Teu Perfil</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <script>
+        // Lógica de Tema
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         } else {
             document.documentElement.classList.remove('dark');
         }
-    </script>
-    <style> * { transition: all 0.3s ease; } </style>
-</head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans antialiased min-h-screen">
 
-    <nav class="bg-white dark:bg-gray-800 shadow-sm py-4 px-8 flex justify-between items-center sticky top-0 z-50 border-b border-transparent dark:border-gray-700">
-        <div class="flex items-center gap-3">
-            <a href="dashboard.html" class="bg-blue-600 p-2 rounded-lg text-white shadow-lg shadow-blue-500/20">
-                <i class="fas fa-shield-alt text-xl"></i>
-            </a>
-            <h1 class="font-bold text-lg leading-tight">CyberLearn</h1>
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            html.classList.toggle('dark');
+            localStorage.theme = html.classList.contains('dark') ? 'dark' : 'light';
+        }
+
+        function executarLogout() {
+            localStorage.clear();
+            window.location.href = "index.html";
+        }
+    </script>
+
+    <style>
+        * { transition: background-color 0.2s ease, color 0.2s ease; }
+        body { height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .dark .custom-scroll::-webkit-scrollbar-thumb { background: #475569; }
+    </style>
+</head>
+
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-700 dark:text-slate-200 font-sans antialiased">
+
+    <nav class="h-12 bg-white dark:bg-slate-900 shadow-sm px-6 flex justify-between items-center z-50 border-b border-slate-200 dark:border-slate-800">
+        <div class="flex items-center gap-2">
+            <div class="bg-blue-600 p-1.5 rounded shadow-lg shadow-blue-500/20">
+                <i class="fas fa-shield-alt text-white text-sm"></i>
+            </div>
+            <span class="font-bold text-sm tracking-tight dark:text-white">CyberLearn</span>
         </div>
-        <a href="dashboard.html" class="text-cyan-500 hover:text-cyan-400 font-bold text-sm flex items-center gap-2 transition-all">
-            <i class="fas fa-arrow-left"></i> Voltar ao Dashboard
-        </a>
+        
+        <div class="flex items-center gap-4 text-xs font-semibold">
+            <a href="dashboard.html" class="text-blue-600 dark:text-blue-400 hover:underline">
+                <i class="fas fa-arrow-left mr-1"></i> Dashboard
+            </a>
+            <div class="h-6 w-px bg-slate-200 dark:bg-slate-800"></div>
+            <button onclick="toggleDarkMode()" class="text-slate-400 hover:text-blue-500 transition-all">
+                <i class="fas fa-moon dark:hidden text-xs"></i>
+                <i class="fas fa-sun hidden dark:block text-xs"></i>
+            </button>
+            <button onclick="executarLogout()" class="text-slate-400 hover:text-red-500 transition-colors">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
     </nav>
 
-    <main class="max-w-4xl mx-auto px-6 py-12">
-        <div class="bg-white dark:bg-gray-800 p-10 rounded-[3rem] border border-gray-100 dark:border-gray-700 shadow-sm mb-8 text-center relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-r from-blue-600 to-cyan-500 opacity-10"></div>
-            
-            <div class="relative z-10">
-                <div class="w-32 h-32 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6 border-4 border-white dark:border-gray-800 shadow-xl flex items-center justify-center overflow-hidden">
-                    <i class="fas fa-user text-5xl text-gray-400"></i>
+    <main class="flex-1 p-6 grid grid-cols-12 gap-6 overflow-hidden">
+        
+        <div class="col-span-12 lg:col-span-4 flex flex-col gap-4">
+            <section class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm text-center">
+                <div class="relative w-24 h-24 mx-auto mb-4">
+                    <div class="w-full h-full bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center border-4 border-white dark:border-slate-900 shadow-md">
+                        <i class="fas fa-user text-4xl text-slate-300"></i>
+                    </div>
+                    <div class="absolute bottom-1 right-1 bg-emerald-500 w-4 h-4 rounded-full border-2 border-white dark:border-slate-900"></div>
                 </div>
-                <h2 id="user-name" class="text-3xl font-black mb-2 text-gray-900 dark:text-white">Carregando Nome...</h2>
-                <p id="user-role" class="text-blue-600 dark:text-blue-400 font-bold uppercase tracking-widest text-xs">Nível 1 • Aprendiz Cyber</p>
-            </div>
+                <h2 id="user-name" class="text-lg font-black dark:text-white leading-tight">Carregando...</h2>
+                <p id="user-role" class="text-[10px] font-bold text-blue-600 uppercase tracking-widest mt-1">ALUNO • NÍVEL 1</p>
+                <div class="mt-4 pt-4 border-t border-slate-50 dark:border-slate-800">
+                    <p class="text-[10px] text-slate-400 uppercase font-bold mb-2">Estado da Conta</p>
+                    <span class="px-3 py-1 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 text-[9px] font-black rounded-full">ATIVO</span>
+                </div>
+            </section>
+
+            <section class="flex-1 bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col overflow-hidden">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Conquistas</h3>
+                <div class="flex-1 overflow-y-auto custom-scroll space-y-3 pr-2">
+                    <div id="badge-iniciante" class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700 opacity-30 grayscale transition-all">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
+                            <i class="fas fa-shield-alt text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-black dark:text-white leading-none">Iniciante Cyber</p>
+                            <p class="text-[9px] text-slate-400 mt-1">Conclui o teu primeiro quiz.</p>
+                        </div>
+                    </div>
+                    <div id="badge-mestre" class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700 opacity-30 grayscale transition-all">
+                        <div class="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600">
+                            <i class="fas fa-trophy text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-black dark:text-white leading-none">Mestre Digital</p>
+                            <p class="text-[9px] text-slate-400 mt-1">Alcança 50 pontos XP.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="col-span-12 lg:col-span-8 flex flex-col gap-6">
             
-            <section class="bg-white dark:bg-gray-800 p-8 rounded-[2.5rem] border border-gray-100 dark:border-gray-700 shadow-sm">
-                <h3 class="font-bold text-xl mb-8 flex items-center gap-3">
-                    <i class="fas fa-chart-pie text-blue-600"></i> As Tuas Estatísticas
-                </h3>
-                <div class="space-y-6">
-                    <div class="flex justify-between items-center p-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl">
-                        <span class="text-gray-500 dark:text-gray-400 font-medium">Pontos Totais</span>
-                        <span id="total-points" class="text-2xl font-black text-blue-600">0</span>
+            <div class="grid grid-cols-3 gap-4">
+                <div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase">Pontos XP</p>
+                    <p id="total-points" class="text-2xl font-black text-blue-600 mt-1">0</p>
+                </div>
+                <div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase">Módulos</p>
+                    <p class="text-2xl font-black text-purple-600 mt-1">0/4</p>
+                </div>
+                <div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase">Classificação</p>
+                    <p class="text-2xl font-black text-amber-500 mt-1">#--</p>
+                </div>
+            </div>
+
+            <section class="flex-1 bg-white dark:bg-slate-900 p-8 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-center">
+                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-8">Análise de Performance</h3>
+                
+                <div class="space-y-8">
+                    <div>
+                        <div class="flex justify-between items-end mb-2">
+                            <span class="text-xs font-bold dark:text-white uppercase">Conhecimento Geral</span>
+                            <span id="progress-percent" class="text-xl font-black text-blue-600">0%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 dark:bg-slate-800 h-3 rounded-full overflow-hidden">
+                            <div id="progress-bar-fill" class="bg-blue-600 h-full w-0 transition-all duration-1000"></div>
+                        </div>
                     </div>
-                    <div class="flex justify-between items-center p-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl">
-                        <span class="text-gray-500 dark:text-gray-400 font-medium">Módulos Lidos</span>
-                        <span class="text-2xl font-black text-purple-600">0/4</span>
-                    </div>
-                    <div class="flex justify-between items-center p-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl">
-                        <span class="text-gray-500 dark:text-gray-400 font-medium">Rank na Turma</span>
-                        <span class="text-2xl font-black text-yellow-500">#--</span>
+
+                    <div class="grid grid-cols-2 gap-8">
+                        <div class="flex items-center gap-4">
+                            <div class="w-2 h-8 bg-cyan-500 rounded-full"></div>
+                            <div>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase">Quizzes</p>
+                                <p class="text-sm font-black dark:text-white">Participação Ativa</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-2 h-8 bg-purple-500 rounded-full"></div>
+                            <div>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase">Leitura</p>
+                                <p class="text-sm font-black dark:text-white">Foco nos Módulos</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <section class="bg-white dark:bg-gray-800 p-8 rounded-[2.5rem] border border-gray-100 dark:border-gray-700 shadow-sm">
-                <h3 class="font-bold text-xl mb-8 flex items-center gap-3">
-                    <i class="fas fa-award text-blue-600"></i> Conquistas
-                </h3>
-                <div class="grid grid-cols-3 gap-4" id="badges-container">
-                    <div class="flex flex-col items-center gap-2 opacity-20 grayscale">
-                        <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center border-2 border-dashed border-gray-400">
-                            <i class="fas fa-shield-virus text-2xl"></i>
-                        </div>
-                        <span class="text-[10px] font-bold uppercase tracking-tight">Defensor</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-2 opacity-20 grayscale">
-                        <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center border-2 border-dashed border-gray-400">
-                            <i class="fas fa-brain text-2xl"></i>
-                        </div>
-                        <span class="text-[10px] font-bold uppercase tracking-tight">Estrategista</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-2 opacity-20 grayscale">
-                        <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center border-2 border-dashed border-gray-400">
-                            <i class="fas fa-bolt text-2xl"></i>
-                        </div>
-                        <span class="text-[10px] font-bold uppercase tracking-tight">Rápido</span>
-                    </div>
-                </div>
-                <p class="text-center text-xs text-gray-400 mt-8 italic">Completa mais quizzes para desbloquear!</p>
-            </section>
+            <div class="bg-blue-600 p-4 rounded-xl text-white flex justify-between items-center shadow-lg shadow-blue-500/20">
+                <p class="text-xs font-medium">Continua a aprender para desbloquear o Nível 2!</p>
+                <i class="fas fa-lock-open opacity-50"></i>
+            </div>
         </div>
     </main>
 
     <script>
         window.onload = function() {
-            // Recuperar dados
-            const nome = localStorage.getItem('userName') || "Explorador Cyber";
+            // Recuperar dados do localStorage
+            const nome = localStorage.getItem('userName') || "Utilizador";
             const pontos = parseInt(localStorage.getItem('userPoints')) || 0;
             const perfil = localStorage.getItem('userPerfil') || "ALUNO";
 
             // Aplicar na interface
             document.getElementById('user-name').innerText = nome;
             document.getElementById('total-points').innerText = pontos;
-            document.getElementById('user-role').innerText = `Nível 1 • ${perfil}`;
+            document.getElementById('user-role').innerText = `${perfil} • Nível 1`;
 
-            // Lógica simples de conquistas baseada em pontos
-            if (pontos >= 30) {
-                const badge = document.querySelector('.opacity-20');
-                if (badge) {
-                    badge.classList.remove('opacity-20', 'grayscale');
-                    badge.classList.add('text-blue-600');
-                    badge.querySelector('div').classList.remove('border-dashed');
-                    badge.querySelector('div').classList.add('bg-blue-50', 'border-solid', 'border-blue-500');
-                }
+            // Lógica de Barra de Progresso
+            const percentagem = Math.min((pontos / 100) * 100, 100);
+            document.getElementById('progress-bar-fill').style.width = `${percentagem}%`;
+            document.getElementById('progress-percent').innerText = `${Math.floor(percentagem)}%`;
+
+            // Lógica de Desbloqueio de Medalhas
+            if (pontos > 0) {
+                const b1 = document.getElementById('badge-iniciante');
+                b1.classList.remove('opacity-30', 'grayscale');
+                b1.classList.add('border-blue-500', 'bg-blue-50', 'dark:bg-blue-900/10');
+            }
+            if (pontos >= 50) {
+                const b2 = document.getElementById('badge-mestre');
+                b2.classList.remove('opacity-30', 'grayscale');
+                b2.classList.add('border-purple-500', 'bg-purple-50', 'dark:bg-purple-900/10');
             }
         };
     </script>

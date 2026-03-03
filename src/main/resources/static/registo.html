@@ -1,77 +1,130 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CyberLearn - Criar Conta</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <script>
+        // Lógica de Inicialização do Tema
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         } else {
             document.documentElement.classList.remove('dark');
         }
+
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            html.classList.toggle('dark');
+            localStorage.theme = html.classList.contains('dark') ? 'dark' : 'light';
+        }
     </script>
 
     <style>
-        * { transition: background-color 0.3s ease, color 0.3s ease; }
-        /* Estilo para o dropdown no dark mode */
-        select option { background: white; color: black; }
-        .dark select option { background: #374151; color: white; }
+        * { transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
+        body { height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        select { appearance: none; }
     </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 h-screen flex items-center justify-center font-sans antialiased">
 
-    <div class="bg-white dark:bg-gray-800 p-10 rounded-[2.5rem] shadow-2xl w-full max-w-md border border-gray-100 dark:border-gray-700 mx-4">
-        
-        <div class="text-center mb-8">
-            <div class="bg-blue-600 w-16 h-16 rounded-2xl flex items-center justify-center text-white mx-auto mb-4 shadow-lg shadow-blue-500/30">
-                <i class="fas fa-user-plus text-2xl"></i>
-            </div>
-            <h2 class="text-3xl font-black text-gray-800 dark:text-white tracking-tight">Criar Conta</h2>
-            <p class="text-gray-500 dark:text-gray-400 text-sm mt-2">Junta-te à comunidade CyberLearn</p>
-        </div>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-700 dark:text-slate-200 font-sans antialiased">
 
-        <div class="space-y-4">
-            <div>
-                <input type="text" id="nome" placeholder="Nome Completo" 
-                    class="w-full px-5 py-4 rounded-2xl bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white placeholder-gray-400">
-            </div>
-
-            <div>
-                <input type="email" id="email" placeholder="E-mail" 
-                    class="w-full px-5 py-4 rounded-2xl bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white placeholder-gray-400">
-            </div>
-            
-            <div>
-                <input type="password" id="pass" placeholder="Palavra-passe" 
-                    class="w-full px-5 py-4 rounded-2xl bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white placeholder-gray-400">
-            </div>
-
-            <div>
-                <select id="perfil" 
-                    class="w-full px-5 py-4 rounded-2xl bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white cursor-pointer appearance-none">
-                    <option value="ALUNO">Aluno</option>
-                    <option value="PROFESSOR">Professor</option>
-                    <option value="ADMINISTRADOR">Administrador</option>
-                </select>
-            </div>
-
-            <button onclick="executarRegisto()" 
-                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-blue-500/25 transform active:scale-[0.98] transition-all text-lg mt-2">
-                Finalizar Registo
-            </button>
-        </div>
-
-        <p class="text-center mt-8 text-gray-600 dark:text-gray-400 font-medium">
-            <a href="index.html" class="text-cyan-500 hover:text-cyan-400 underline decoration-dotted underline-offset-4 transition-colors">
-                <i class="fas fa-arrow-left text-xs mr-1"></i> Já tenho conta (Voltar)
-            </a>
-        </p>
+    <div class="fixed top-6 right-6 z-50">
+        <button onclick="toggleDarkMode()" class="p-2.5 rounded-xl bg-white dark:bg-slate-900 shadow-sm border border-slate-200 dark:border-slate-800 text-slate-500 dark:text-yellow-400 hover:scale-110 transition-all">
+            <i class="fas fa-moon dark:hidden"></i>
+            <i class="fas fa-sun hidden dark:block"></i>
+        </button>
     </div>
+
+    <main class="flex-1 flex items-center justify-center p-6">
+        
+        <div class="w-full max-w-[400px] flex flex-col gap-6">
+            
+            <div class="text-center">
+                <div class="inline-flex items-center justify-center bg-blue-600 w-12 h-12 rounded-xl shadow-lg shadow-blue-500/20 mb-3">
+                    <i class="fas fa-user-plus text-white text-xl"></i>
+                </div>
+                <h1 class="text-xl font-black tracking-tight dark:text-white">Criar Nova Conta</h1>
+                <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-1 uppercase font-bold tracking-widest">Junta-te à CyberLearn Academy</p>
+            </div>
+
+            <section class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-[9px] font-black uppercase text-slate-400 mb-1 ml-1">Nome Completo</label>
+                        <div class="relative">
+                            <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[10px]"></i>
+                            <input type="text" id="nome" required
+                                class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-xs focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white"
+                                placeholder="O teu nome">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-[9px] font-black uppercase text-slate-400 mb-1 ml-1">Endereço de Email</label>
+                        <div class="relative">
+                            <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[10px]"></i>
+                            <input type="email" id="email" required
+                                class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-xs focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white"
+                                placeholder="email@exemplo.com">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-[9px] font-black uppercase text-slate-400 mb-1 ml-1">Palavra-passe</label>
+                        <div class="relative">
+                            <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[10px]"></i>
+                            <input type="password" id="pass" required
+                                class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-xs focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:text-white"
+                                placeholder="••••••••">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-[9px] font-black uppercase text-slate-400 mb-1 ml-1">Tipo de Perfil</label>
+                        <div class="relative">
+                            <i class="fas fa-id-badge absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[10px]"></i>
+                            <select id="perfil" 
+                                class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl py-2.5 pl-10 pr-10 text-xs focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer dark:text-white transition-all">
+                                <option value="ALUNO">Aluno</option>
+                                <option value="PROFESSOR">Professor</option>
+                                <option value="ADMINISTRADOR">Administrador</option>
+                            </select>
+                            <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-[10px] pointer-events-none"></i>
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <button onclick="executarRegisto()" 
+                            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-blue-500/30 transition-all active:scale-[0.98] text-xs flex items-center justify-center gap-2">
+                            <span>Criar Conta Agora</span>
+                            <i class="fas fa-arrow-right text-[10px] opacity-70"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <div class="text-center">
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">
+                    Já fazes parte da academia? 
+                    <a href="index.html" class="text-blue-600 dark:text-blue-400 font-bold hover:underline">Voltar ao Login</a>
+                </p>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="h-10 flex items-center justify-center border-t border-slate-200 dark:border-slate-800">
+        <p class="text-[8px] font-black uppercase tracking-[0.3em] text-slate-400">&copy; 2026 CyberLearn • Davide Fonseca</p>
+    </footer>
 
     <script>
         async function executarRegisto() {
@@ -85,24 +138,32 @@
                 return;
             }
 
-            const res = await fetch('/api/usuarios', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    nome: nome, 
-                    email: email, 
-                    passwordHash: senha,
-                    perfil: perfil
-                })
-            });
+try {
+        const res = await fetch('/api/usuarios/registo', { 
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ 
+        nome: nome, 
+        email: email, 
+        passwordHash: senha,
+        perfil: perfil
+    })
+});
 
-            if (res.ok) {
-                alert("Conta criada com sucesso!");
-                window.location.href = "index.html";
-            } else {
-                alert("Erro ao criar conta. Tenta novamente.");
-            }
+        const data = await res.text(); // Lê a resposta do servidor (texto de erro ou sucesso)
+
+        if (res.ok) {
+            alert("Conta criada com sucesso!");
+            window.location.href = "index.html";
+        } else {
+            // Agora o alert vai mostrar o erro real vindo do Java
+            alert("Erro do Servidor: " + data);
         }
+    } catch (error) {
+        console.error("Erro na ligação:", error);
+        alert("Erro de rede. Verifique se o servidor Spring está a correr.");
+    }
+}
     </script>
 </body>
 </html>

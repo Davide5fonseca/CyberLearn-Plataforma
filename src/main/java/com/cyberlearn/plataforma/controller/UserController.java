@@ -13,13 +13,19 @@ public class UserController {
     @Autowired private UtilizadorRepository repo;
     @Autowired private PasswordEncoder encoder;
 
-    @PostMapping("/registo")
-    public String registo(@RequestBody Utilizador u) {
-        if(repo.findByEmail(u.getEmail()).isPresent()) return "Email já existe!";
-        u.setPasswordHash(encoder.encode(u.getPasswordHash()));
-        repo.save(u);
-        return "Sucesso!";
+@PostMapping("/registo")
+public ResponseEntity<?> registo(@RequestBody Utilizador u) {
+    // Verifica se o email já existe
+    if(repo.findByEmail(u.getEmail()).isPresent()) {
+        return ResponseEntity.badRequest().body("Erro: Este e-mail já está em uso!");
     }
+    
+    // Encripta a password antes de guardar
+    u.setPasswordHash(encoder.encode(u.getPasswordHash()));
+    repo.save(u);
+    
+    return ResponseEntity.ok("Utilizador registado com sucesso!");
+}
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Utilizador login) {

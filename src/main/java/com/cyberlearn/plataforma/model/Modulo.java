@@ -12,8 +12,12 @@ public class Modulo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
     private String titulo;
     private Integer ordem;
+
+    @Column(columnDefinition = "TEXT")
+    private String conteudo; // Adicionado para guardar o texto explicativo
 
     @ManyToOne
     @JoinColumn(name = "curso_id")

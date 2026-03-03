@@ -1,201 +1,299 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CyberLearn - Módulos Educativos</title>
+    <title>CyberLearn - Biblioteca de Segurança</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <script>
+        // Lógica de persistência do tema
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         } else {
             document.documentElement.classList.remove('dark');
         }
+
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            html.classList.toggle('dark');
+            localStorage.theme = html.classList.contains('dark') ? 'dark' : 'light';
+        }
+
+        function executarLogout() {
+            localStorage.clear();
+            window.location.href = "index.html";
+        }
     </script>
 
     <style>
-        * { transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.3s ease; }
-        .modal-open { overflow: hidden; }
-        /* Estilo para garantir que o PDF ignore o modo dark e saia legível */
-        .pdf-export { background: white !important; color: black !important; padding: 20px; }
+        * { transition: background-color 0.2s ease, color 0.2s ease; }
+        body { height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .dark .custom-scroll::-webkit-scrollbar-thumb { background: #475569; }
+        
+        .pdf-export { background: white !important; color: black !important; padding: 40px; }
+        .pdf-export h2 { color: #2563eb !important; margin-bottom: 20px !important; }
+        .pdf-export p { margin-bottom: 15px !important; line-height: 1.6 !important; }
     </style>
 </head>
 
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans antialiased min-h-screen">
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-700 dark:text-slate-200 font-sans antialiased">
 
-    <nav class="bg-white dark:bg-gray-800 shadow-sm py-4 px-8 flex justify-between items-center sticky top-0 z-50 border-b border-transparent dark:border-gray-700">
-        <div class="flex items-center gap-3">
-            <div class="bg-blue-600 p-2 rounded-lg text-white shadow-lg shadow-blue-500/20">
-                <i class="fas fa-shield-alt text-xl"></i>
+    <nav class="h-12 bg-white dark:bg-slate-900 shadow-sm px-6 flex justify-between items-center z-50 border-b border-slate-200 dark:border-slate-800">
+        <div class="flex items-center gap-2">
+            <div class="bg-blue-600 p-1.5 rounded shadow-lg shadow-blue-500/20">
+                <i class="fas fa-shield-alt text-white text-sm"></i>
             </div>
-            <div>
-                <h1 class="font-bold text-lg leading-tight">CyberLearn</h1>
-                <p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-wider font-bold">Módulos de Aprendizagem</p>
-            </div>
+            <span class="font-bold text-sm tracking-tight dark:text-white">CyberLearn</span>
         </div>
         
-        <a href="dashboard.html" class="text-cyan-500 hover:text-cyan-400 font-bold text-sm flex items-center gap-2 group transition-all">
-            <i class="fas fa-arrow-left group-hover:-translate-x-1"></i> Voltar ao Dashboard
-        </a>
+        <div class="flex items-center gap-4 text-xs font-semibold">
+            <a href="dashboard.html" class="text-blue-600 dark:text-blue-400 hover:underline">
+                <i class="fas fa-arrow-left mr-1"></i> Dashboard
+            </a>
+            <div class="h-6 w-px bg-slate-200 dark:bg-slate-800"></div>
+            <button onclick="toggleDarkMode()" class="text-slate-400 hover:text-blue-500 transition-all">
+                <i class="fas fa-moon dark:hidden text-xs"></i>
+                <i class="fas fa-sun hidden dark:block text-xs"></i>
+            </button>
+            <button onclick="executarLogout()" class="text-slate-400 hover:text-red-500 transition-colors">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
     </nav>
 
-    <main class="max-w-6xl mx-auto px-6 py-12">
-        <header class="mb-16">
-            <h2 class="text-5xl font-black mb-4 tracking-tight text-gray-900 dark:text-white leading-tight">Aprende a Proteger-te 🛡️</h2>
-            <p class="text-gray-500 dark:text-gray-400 text-xl max-w-2xl leading-relaxed">Explora os nossos guias práticos e aprende a navegar na internet com segurança e inteligência.</p>
+    <main class="flex-1 p-6 flex flex-col overflow-hidden">
+        <header class="mb-6">
+            <h2 class="text-xl font-black tracking-tight dark:text-white">Biblioteca de Segurança 📚</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Clica num tema para abrir o documento explicativo completo.</p>
         </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-            <div onclick="abrirModulo('redes')" class="group bg-white dark:bg-gray-800 p-8 rounded-[3rem] border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-2xl hover:-translate-y-2 cursor-pointer relative overflow-hidden">
-                <div class="bg-pink-100 dark:bg-pink-900/30 text-pink-600 p-5 rounded-2xl w-fit mb-6 group-hover:scale-110">
-                    <i class="fas fa-share-alt text-3xl"></i>
+        <div class="flex-1 overflow-y-auto custom-scroll pr-2 pb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                
+                <div onclick="abrirModulo('redes')" class="group bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-pink-500 transition-all cursor-pointer flex items-center gap-4">
+                    <div class="w-10 h-10 bg-pink-50 dark:bg-pink-900/20 text-pink-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform"><i class="fas fa-share-alt"></i></div>
+                    <div><h3 class="font-bold text-sm dark:text-white leading-tight">Redes Sociais</h3><p class="text-[10px] text-slate-400">Gere a tua pegada e privacidade digital.</p></div>
                 </div>
-                <h3 class="text-2xl font-bold mb-3">Redes Sociais</h3>
-                <p class="text-gray-500 dark:text-gray-400 mb-8 leading-relaxed">Domina as tuas definições de privacidade e protege a tua imagem online.</p>
-                <div class="flex items-center text-pink-500 font-black text-sm uppercase tracking-widest">
-                    Ler Módulo Completo <i class="fas fa-chevron-right ml-2 group-hover:translate-x-1"></i>
-                </div>
-            </div>
 
-            <div onclick="abrirModulo('bullying')" class="group bg-white dark:bg-gray-800 p-8 rounded-[3rem] border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-2xl hover:-translate-y-2 cursor-pointer relative overflow-hidden">
-                <div class="bg-purple-100 dark:bg-purple-900/30 text-purple-600 p-5 rounded-2xl w-fit mb-6 group-hover:scale-110">
-                    <i class="fas fa-comment-slash text-3xl"></i>
+                <div onclick="abrirModulo('bullying')" class="group bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-purple-500 transition-all cursor-pointer flex items-center gap-4">
+                    <div class="w-10 h-10 bg-purple-50 dark:bg-purple-900/20 text-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform"><i class="fas fa-comment-slash"></i></div>
+                    <div><h3 class="font-bold text-sm dark:text-white leading-tight">Cyberbullying</h3><p class="text-[10px] text-slate-400">Protege-te e age contra agressões online.</p></div>
                 </div>
-                <h3 class="text-2xl font-bold mb-3">Cyberbullying</h3>
-                <p class="text-gray-500 dark:text-gray-400 mb-8 leading-relaxed">Aprende a agir perante agressões online e como pedir ajuda eficazmente.</p>
-                <div class="flex items-center text-purple-500 font-black text-sm uppercase tracking-widest">
-                    Ler Módulo Completo <i class="fas fa-chevron-right ml-2 group-hover:translate-x-1"></i>
-                </div>
-            </div>
 
-            <div onclick="abrirModulo('phishing')" class="group bg-white dark:bg-gray-800 p-8 rounded-[3rem] border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-2xl hover:-translate-y-2 cursor-pointer relative overflow-hidden">
-                <div class="bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 p-5 rounded-2xl w-fit mb-6 group-hover:scale-110">
-                    <i class="fas fa-fish text-3xl"></i>
+                <div onclick="abrirModulo('phishing')" class="group bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-cyan-500 transition-all cursor-pointer flex items-center gap-4">
+                    <div class="w-10 h-10 bg-cyan-50 dark:bg-cyan-900/20 text-cyan-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform"><i class="fas fa-fish"></i></div>
+                    <div><h3 class="font-bold text-sm dark:text-white leading-tight">Phishing</h3><p class="text-[10px] text-slate-400">Identifica burlas e mensagens enganadoras.</p></div>
                 </div>
-                <h3 class="text-2xl font-bold mb-3">Phishing</h3>
-                <p class="text-gray-500 dark:text-gray-400 mb-8 leading-relaxed">Não sejas o próximo a "morder o isco". Identifica burlas em segundos.</p>
-                <div class="flex items-center text-cyan-500 font-black text-sm uppercase tracking-widest">
-                    Ler Módulo Completo <i class="fas fa-chevron-right ml-2 group-hover:translate-x-1"></i>
-                </div>
-            </div>
 
-            <div onclick="abrirModulo('passwords')" class="group bg-white dark:bg-gray-800 p-8 rounded-[3rem] border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-2xl hover:-translate-y-2 cursor-pointer relative overflow-hidden">
-                <div class="bg-blue-100 dark:bg-blue-900/30 text-blue-600 p-5 rounded-2xl w-fit mb-6 group-hover:scale-110">
-                    <i class="fas fa-key text-3xl"></i>
+                <div onclick="abrirModulo('passwords')" class="group bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-blue-500 transition-all cursor-pointer flex items-center gap-4">
+                    <div class="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform"><i class="fas fa-key"></i></div>
+                    <div><h3 class="font-bold text-sm dark:text-white leading-tight">Passwords</h3><p class="text-[10px] text-slate-400">Cria códigos seguros e usa o 2FA.</p></div>
                 </div>
-                <h3 class="text-2xl font-bold mb-3">Passwords</h3>
-                <p class="text-gray-500 dark:text-gray-400 mb-8 leading-relaxed">Cria códigos inquebráveis e ativa a proteção de dois fatores (MFA).</p>
-                <div class="flex items-center text-blue-500 font-black text-sm uppercase tracking-widest">
-                    Ler Módulo Completo <i class="fas fa-chevron-right ml-2 group-hover:translate-x-1"></i>
+
+                <div onclick="abrirModulo('malware')" class="group bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-red-500 transition-all cursor-pointer flex items-center gap-4">
+                    <div class="w-10 h-10 bg-red-50 dark:bg-red-900/20 text-red-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform"><i class="fas fa-virus-slash"></i></div>
+                    <div><h3 class="font-bold text-sm dark:text-white leading-tight">Malware</h3><p class="text-[10px] text-slate-400">Evita vírus e software malicioso.</p></div>
                 </div>
+
+                <div onclick="abrirModulo('wifi')" class="group bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-amber-500 transition-all cursor-pointer flex items-center gap-4">
+                    <div class="w-10 h-10 bg-amber-50 dark:bg-amber-900/20 text-amber-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform"><i class="fas fa-wifi"></i></div>
+                    <div><h3 class="font-bold text-sm dark:text-white leading-tight">Wi-Fi Seguro</h3><p class="text-[10px] text-slate-400">Riscos de redes abertas e públicas.</p></div>
+                </div>
+
+                <div onclick="abrirModulo('compras')" class="group bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-emerald-500 transition-all cursor-pointer flex items-center gap-4">
+                    <div class="w-10 h-10 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform"><i class="fas fa-shopping-cart"></i></div>
+                    <div><h3 class="font-bold text-sm dark:text-white leading-tight">Compras Online</h3><p class="text-[10px] text-slate-400">Como comprar sem cair em fraudes.</p></div>
+                </div>
+
+                <div onclick="abrirModulo('social')" class="group bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-orange-500 transition-all cursor-pointer flex items-center gap-4">
+                    <div class="w-10 h-10 bg-orange-50 dark:bg-orange-900/20 text-orange-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform"><i class="fas fa-user-ninja"></i></div>
+                    <div><h3 class="font-bold text-sm dark:text-white leading-tight">Engenharia Social</h3><p class="text-[10px] text-slate-400">A manipulação e o fator humano.</p></div>
+                </div>
+
             </div>
         </div>
     </main>
 
-    <div id="moduloModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
-        <div class="bg-white dark:bg-gray-800 w-full max-w-3xl rounded-[3.5rem] shadow-2xl overflow-hidden transform transition-all scale-95 opacity-0 duration-300 border border-gray-200 dark:border-gray-700" id="modalContent">
-            <div class="p-10 md:p-16 relative max-h-[90vh] overflow-y-auto">
-                <button onclick="fecharModulo()" class="absolute top-10 right-10 text-gray-400 hover:text-red-500 text-3xl transition">
-                    <i class="fas fa-times"></i>
+    <div id="moduloModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-2xl rounded-xl shadow-2xl overflow-hidden transform transition-all scale-95 opacity-0 duration-300 border border-slate-200 dark:border-slate-800" id="modalContent">
+            <div class="p-8 relative max-h-[85vh] overflow-y-auto custom-scroll">
+                <button onclick="fecharModulo()" class="absolute top-6 right-6 text-slate-400 hover:text-red-500 transition-colors">
+                    <i class="fas fa-times text-xl"></i>
                 </button>
 
-                <div id="modalBody"></div>
+                <div id="modalBody" class="prose dark:prose-invert max-w-none text-slate-600 dark:text-slate-400 leading-relaxed">
+                    </div>
 
-                <div class="mt-12 space-y-4">
-                    <button onclick="gerarPDF()" class="w-full border-2 border-cyan-500 text-cyan-600 dark:text-cyan-400 py-4 rounded-2xl font-black text-lg hover:bg-cyan-500 hover:text-white transition flex items-center justify-center gap-2">
-                        <i class="fas fa-file-pdf"></i> Descarregar em PDF
+                <div class="mt-8 flex gap-3 border-t border-slate-100 dark:border-slate-800 pt-6">
+                    <button onclick="gerarPDF()" class="flex-1 border border-slate-200 dark:border-slate-700 py-2.5 rounded-lg text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition flex items-center justify-center gap-2 dark:text-white">
+                        <i class="fas fa-file-pdf text-red-500 text-sm"></i> Guardar como PDF
                     </button>
-
-                    <button onclick="fecharModulo()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-black text-lg shadow-lg shadow-blue-500/30 transform active:scale-95 transition-all">
-                        Entendi, Proteger Agora!
-                    </button>
+                    <button onclick="fecharModulo()" class="flex-1 bg-blue-600 text-white py-2.5 rounded-lg text-xs font-bold hover:bg-blue-700 transition">Concluir Leitura</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <footer class="mt-20 py-12 text-center border-t border-gray-100 dark:border-gray-800">
-        <p class="text-xs text-gray-400 uppercase tracking-[0.3em] font-black">&copy; 2026 CyberLearn - Davide Fonseca</p>
-    </footer>
-
-<script>
-    const conteudos = {
-        redes: {
-            titulo: "Redes Sociais e Pegada Digital 📱",
-            texto: "<div class='space-y-6 text-gray-600 dark:text-gray-300 leading-relaxed text-lg'><p>Cada vez que publicas algo, deixas uma <strong class='text-gray-900 dark:text-white'>Pegada Digital</strong>. Este rasto pode durar décadas.</p><div class='bg-pink-50 dark:bg-pink-900/20 p-6 rounded-3xl border-l-8 border-pink-500'><h4 class='font-black text-pink-700 dark:text-pink-400 mb-4 uppercase tracking-wider text-sm'>Checklist de Privacidade:</h4><ul class='list-disc ml-5 space-y-3'><li><strong>Contas Privadas:</strong> Garante que apenas amigos aprovados veem o teu conteúdo.</li><li><strong>Localização:</strong> Nunca publiques fotos que mostrem a tua escola ou casa.</li><li><strong>Desconhecidos:</strong> Aceitar estranhos dá-lhes acesso ao teu número pessoal.</li></ul></div></div>"
-        },
-        bullying: {
-            titulo: "Combate ao Cyberbullying 🚫",
-            texto: "<div class='space-y-6 text-gray-600 dark:text-gray-300 leading-relaxed text-lg'><p>O cyberbullying utiliza ferramentas digitais para assediar e humilhar. É um crime grave.</p><div class='bg-purple-50 dark:bg-purple-900/20 p-6 rounded-3xl border-l-8 border-purple-500'><h4 class='font-black text-purple-700 dark:text-purple-400 mb-4 uppercase tracking-wider text-sm'>Como agir:</h4><ul class='list-disc ml-5 space-y-3'><li><strong>Não respondas:</strong> O agressor alimenta-se da tua reação.</li><li><strong>Faz Print:</strong> Guarda evidências de todas as mensagens abusivas.</li><li><strong>Bloqueia e Reporta:</strong> Corta o contacto permanentemente.</li></ul></div></div>"
-        },
-        phishing: {
-            titulo: "Cuidado com o Isco! (Phishing) 🎣",
-            texto: "<div class='space-y-6 text-gray-600 dark:text-gray-300 leading-relaxed text-lg'><p>O Phishing é uma técnica de engano para roubar as tuas passwords.</p><div class='bg-cyan-50 dark:bg-cyan-900/20 p-6 rounded-3xl border-l-8 border-cyan-500'><h4 class='font-black text-cyan-700 dark:text-cyan-400 mb-4 uppercase tracking-wider text-sm'>Sinais de Burlas:</h4><ul class='list-disc ml-5 space-y-3'><li><strong>Urgência Falsa:</strong> Mensagens a dizer que a conta será suspensa.</li><li><strong>Erros no Link:</strong> Verifica sempre o URL oficial.</li><li><strong>Anexos:</strong> Nunca abras ficheiros .zip de desconhecidos.</li></ul></div></div>"
-        },
-        passwords: {
-            titulo: "Passwords Inquebráveis 🔑",
-            texto: "<div class='space-y-6 text-gray-600 dark:text-gray-300 leading-relaxed text-lg'><p>Passwords fracas são a maior causa de contas hackeadas.</p><div class='bg-blue-50 dark:bg-blue-900/20 p-6 rounded-3xl border-l-8 border-blue-600'><h4 class='font-black text-blue-700 dark:text-blue-400 mb-4 uppercase tracking-wider text-sm'>O Teu Escudo:</h4><ul class='list-disc ml-5 space-y-3'><li><strong>Passphrases:</strong> Usa frases longas como 'OMeuCaoComeSardinhas!'.</li><li><strong>MFA (2FA):</strong> Ativa a autenticação de 2 fatores sempre.</li><li><strong>Passwords Únicas:</strong> Nunca uses a mesma password em todo o lado.</li></ul></div></div>"
-        }
-    };
-
-    function abrirModulo(id) {
-        const modal = document.getElementById('moduloModal');
-        const content = document.getElementById('modalContent');
-        const body = document.getElementById('modalBody');
-        const info = conteudos[id];
-
-        body.innerHTML = '<div class="mb-2 uppercase tracking-[0.2em] text-xs font-black text-blue-600 dark:text-blue-400">CyberLearn Academy</div>' +
-                        '<h2 class="text-4xl font-black mb-8 text-gray-900 dark:text-white leading-tight">' + info.titulo + '</h2>' +
-                        info.texto;
-
-        modal.classList.remove('hidden');
-        setTimeout(() => {
-            content.classList.remove('scale-95', 'opacity-0');
-            content.classList.add('scale-100', 'opacity-100');
-        }, 10);
-        document.body.classList.add('modal-open');
-    }
-
-    function fecharModulo() {
-        const modal = document.getElementById('moduloModal');
-        const content = document.getElementById('modalContent');
-        content.classList.add('scale-95', 'opacity-0');
-        setTimeout(() => {
-            modal.classList.add('hidden');
-            document.body.classList.remove('modal-open');
-        }, 300);
-    }
-
-    // NOVA FUNÇÃO PARA PDF
-    function gerarPDF() {
-        const elemento = document.getElementById('modalBody');
-        // Capturamos o título atual para o nome do ficheiro
-        const titulo = elemento.querySelector('h2').innerText;
-
-        const opcoes = {
-            margin: [15, 15, 15, 15],
-            filename: `CyberLearn - ${titulo}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { 
-                scale: 2, 
-                useCORS: true,
-                letterRendering: true
+    <script>
+        // DOCUMENTOS EXPLICATIVOS DETALHADOS
+        const conteudos = {
+            redes: {
+                titulo: "Guia Completo: Redes Sociais e Pegada Digital",
+                texto: `
+                    <p>As redes sociais transformaram a forma como comunicamos, mas também criaram novos riscos para a nossa privacidade. Cada vez que publicas uma foto, comentas um post ou dás "like", estás a alimentar a tua <strong>Pegada Digital</strong>.</p>
+                    <h4 class="font-bold text-slate-800 dark:text-white mt-4">1. A Natureza Permanente da Internet</h4>
+                    <p>Ao contrário de uma conversa física, o que é colocado na internet raramente desaparece por completo. Mesmo que apagues um post, alguém pode ter tirado um "print" ou o servidor da plataforma pode manter uma cópia. Esta pegada pode ser consultada por futuros empregadores ou universidades.</p>
+                    <h4 class="font-bold text-slate-800 dark:text-white mt-4">2. Configurações de Privacidade</h4>
+                    <p>É vital rever as definições de privacidade regularmente. Garante que apenas os teus amigos reais podem ver os teus conteúdos. Plataformas como o Instagram, TikTok e Facebook mudam frequentemente estas opções, por isso, manter-se informado é a melhor defesa.</p>
+                    <h4 class="font-bold text-slate-800 dark:text-white mt-4">3. Partilha de Localização</h4>
+                    <p>Evita partilhar fotos que mostrem a fachada da tua casa, o teu uniforme escolar ou locais que frequentas diariamente. Estes dados permitem que estranhos tracem a tua rotina física.</p>
+                `
             },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            bullying: {
+                titulo: "Guia Completo: Combater o Cyberbullying",
+                texto: `
+                    <p>O cyberbullying é a utilização de meios digitais para assediar, humilhar ou ameaçar outra pessoa de forma repetida. É um comportamento que pode ter consequências psicológicas graves e, em muitos casos, é considerado crime.</p>
+                    <h4 class="font-bold text-slate-800 dark:text-white mt-4">1. Como Identificar</h4>
+                    <p>Se recebes mensagens de ódio constantes, se alguém partilha fotos tuas sem autorização para te ridicularizar, ou se és excluído propositadamente de grupos online com fins ofensivos, estás perante cyberbullying.</p>
+                    <h4 class="font-bold text-slate-800 dark:text-white mt-4">2. A Regra de Ouro: Não Responder</h4>
+                    <p>O agressor alimenta-se da tua reação e do teu sofrimento. Ao não responderes, retiras-lhe o "combustível". Corta o contacto imediatamente utilizando as ferramentas de bloqueio da plataforma.</p>
+                    <h4 class="font-bold text-slate-800 dark:text-white mt-4">3. Guardar Provas e Denunciar</h4>
+                    <p>Tira capturas de ecrã (prints) de todas as ofensas. Estas são provas fundamentais se precisares de envolver as autoridades ou a escola. Nunca sofras em silêncio: fala com um professor, pais ou contacta a Linha Internet Segura.</p>
+                `
+            },
+            phishing: {
+                titulo: "Guia Completo: Identificar e Evitar o Phishing",
+                texto: `
+                    <p>O Phishing é uma técnica de engenharia social onde criminosos se fazem passar por entidades de confiança (bancos, serviços de entrega, redes sociais) para roubar passwords e dados bancários.</p>
+                    <h4 class="font-bold text-slate-800 dark:text-white mt-4">1. O Sentido de Urgência</h4>
+                    <p>Muitas mensagens de phishing usam o medo: "A sua conta será bloqueada se não agir agora!" ou "Detetámos um acesso suspeito". Este pânico impede-te de pensar racionalmente antes de clicares.</p>
+                    <h4 class="font-bold text-slate-800 dark:text-white mt-4">2. Analisar o Link e o Remetente</h4>
+                    <p>Verifica sempre o endereço de email do remetente. Se o email diz ser da Netflix mas o endereço é "netflix-suporte@gmail.com", é falso. Passa o rato por cima do link (sem clicar) para ver o URL real no canto do navegador.</p>
+                    <h4 class="font-bold text-slate-800 dark:text-white mt-4">3. Nunca Dês Dados Sensíveis por Email</h4>
+                    <p>Nenhuma empresa legítima te pedirá a password ou o número do cartão de crédito por email ou SMS. Se tiveres dúvidas, vai diretamente ao site oficial digitando o endereço no navegador.</p>
+                `
+            },
+            passwords: {
+                titulo: "Guia Completo: Gestão de Passwords e MFA",
+                texto: `
+                    <p>A password é a chave da tua vida digital. Usar chaves fracas é como deixar a porta de casa aberta.</p>
+                    <h4 class="font-bold text-slate-800 dark:text-white mt-4">1. De Passwords a Passphrases</h4>
+                    <p>Em vez de "C@sa123", usa frases longas como "OMeuGatoGostaDeSardinhas2024!". São muito mais difíceis de descobrir por computadores de hackers devido ao seu comprimento.</p>
+                    <h4 class="font-bold text-slate-800 dark:text-white mt-4">2. O Perigo da Reutilização</h4>
+                    <p>Se usas a mesma password no Instagram e no teu Email, um hacker só precisa de invadir um site para ter acesso a tudo o que é teu. Cada serviço deve ter uma chave única.</p>
+                    <h4 class="font-bold text-slate-800 dark:text-white mt-4">3. Autenticação Multi-Fator (MFA)</h4>
+                    <p>Ativa sempre o MFA (ou 2FA). Isto adiciona uma segunda camada: mesmo que um hacker saiba a tua password, ele não conseguirá entrar sem o código enviado para o teu telemóvel ou gerado por uma app.</p>
+                `
+            },
+            malware: {
+                titulo: "Guia Completo: Proteção Contra Malware",
+                texto: `
+                    <p>Malware é o termo geral para "Software Malicioso", que inclui vírus, cavalos de troia, ransomware e spyware.</p>
+                    <h4 class="font-bold text-slate-800 dark:text-white mt-4">1. Ransomware: O Sequestro de Dados</h4>
+                    <p>Este é um dos malwares mais perigosos hoje em dia. Ele encripta os teus ficheiros e exige um pagamento (resgate) para os devolver. Fazer backups regulares é a única forma de te protegeres totalmente.</p>
+                    <h4 class="font-bold text-slate-800 dark:text-white mt-4">2. Como Entra no Teu PC?</h4>
+                    <p>As formas mais comuns são anexos de email estranhos, downloads de software pirata (cracks) e anúncios falsos em sites pouco seguros. Evita instalar programas de fontes que não sejam oficiais.</p>
+                    <h4 class="font-bold text-slate-800 dark:text-white mt-4">3. Atualizações de Segurança</h4>
+                    <p>O teu sistema operativo (Windows, Android, iOS) lança atualizações para corrigir "buracos" que o malware usa para entrar. Instalar as atualizações mal elas aparecem é fundamental.</p>
+                `
+            },
+            wifi: {
+                titulo: "Guia Completo: Perigos do Wi-Fi Público",
+                texto: `
+                    <p>O Wi-Fi gratuito em cafés, hotéis e aeroportos é cómodo, mas extremamente inseguro por natureza.</p>
+                    <h4 class="font-bold text-slate-800 dark:text-white mt-4">1. O Ataque "Man-in-the-Middle"</h4>
+                    <p>Um hacker ligado à mesma rede pode colocar-se entre o teu dispositivo e o roteador, lendo tudo o que envias e recebes, incluindo passwords de sites que não usem encriptação forte.</p>
+                    <h4 class="font-bold text-slate-800 dark:text-white mt-4">2. Redes "Evil Twin"</h4>
+                    <p>Um hacker pode criar uma rede com o mesmo nome do café ("Wi-Fi_Gratis_Centro"). Tu ligas-te pensando que é a oficial, mas estás ligado diretamente ao computador do criminoso.</p>
+                    <h4 class="font-bold text-slate-800 dark:text-white mt-4">3. Boas Práticas</h4>
+                    <p>Usa uma VPN quando estiveres em redes públicas para encriptar os teus dados. Se não tiveres VPN, evita aceder a bancos ou fazer compras online até estares numa rede de confiança (casa ou dados móveis).</p>
+                `
+            },
+            compras: {
+                titulo: "Guia Completo: Compras Online e Fraudes",
+                texto: `
+                    <p>Comprar online é prático, mas exige atenção redobrada para não seres vítima de burla ou roubo de dados bancários.</p>
+                    <h4 class="font-bold text-slate-800 dark:text-white mt-4">1. Verificar a Segurança do Site</h4>
+                    <p>Procura sempre o cadeado na barra de endereços e o protocolo "HTTPS". No entanto, cuidado: hoje em dia até sites fraudulentos podem ter cadeado. Verifica a reputação da loja em sites de queixas.</p>
+                    <h4 class="font-bold text-slate-800 dark:text-white mt-4">2. Métodos de Pagamento Seguros</h4>
+                    <p>Nunca dês o número real do teu cartão de crédito diretamente. Usa serviços como MBWay (cartões virtuais de uso único), PayPal ou referências multibanco. Assim, limitas o valor que pode ser retirado.</p>
+                    <h4 class="font-bold text-slate-800 dark:text-white mt-4">3. Descontos Irresistíveis</h4>
+                    <p>Se um iPhone novo está à venda por 200€ num site desconhecido, é quase certamente uma fraude. Se a oferta parece demasiado boa para ser verdade, provavelmente é mentira.</p>
+                `
+            },
+            social: {
+                titulo: "Guia Completo: O Que é Engenharia Social?",
+                texto: `
+                    <p>A Engenharia Social foca-se no elo mais fraco da segurança: as pessoas. É a arte de manipular alguém para que esta entregue informações confidenciais voluntariamente.</p>
+                    <h4 class="font-bold text-slate-800 dark:text-white mt-4">1. Pretexting: A Mentira Elaborada</h4>
+                    <p>O atacante cria um cenário falso (fingindo ser do suporte técnico ou de uma auditoria) para obter dados. Eles falam com autoridade para que não questiones as suas intenções.</p>
+                    <h4 class="font-bold text-slate-800 dark:text-white mt-4">2. Baiting: O Isco</h4>
+                    <p>Consiste em oferecer algo tentador (um download grátis, um brinde) em troca de um login ou da instalação de um pequeno ficheiro que contém malware.</p>
+                    <h4 class="font-bold text-slate-800 dark:text-white mt-4">3. Como Te Protegeres</h4>
+                    <p>Lembra-te: a tua password e códigos de SMS são privados. Nenhuma entidade oficial te pedirá esses dados por telefone ou chat. Questiona sempre pedidos invulgares, mesmo que pareçam vir de amigos (as contas deles podem ter sido roubadas).</p>
+                `
+            }
         };
 
-        // Adicionamos uma classe temporária para garantir fundo branco no PDF
-        elemento.classList.add('pdf-export');
-        
-        html2pdf().set(opcoes).from(elemento).save().then(() => {
-            // Removemos a classe após o download
-            elemento.classList.remove('pdf-export');
-        });
-    }
-</script>
+        function abrirModulo(id) {
+            const modal = document.getElementById('moduloModal');
+            const content = document.getElementById('modalContent');
+            const body = document.getElementById('modalBody');
+            const info = conteudos[id];
+
+            body.innerHTML = `
+                <div class="mb-2 uppercase text-[9px] font-black text-blue-600 tracking-widest">Documento Explicativo</div>
+                <h2 class="text-xl font-black mb-6 dark:text-white leading-tight">${info.titulo}</h2>
+                <div class="text-sm space-y-4">${info.texto}</div>
+            `;
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function fecharModulo() {
+            const modal = document.getElementById('moduloModal');
+            const content = document.getElementById('modalContent');
+            content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }, 300);
+        }
+
+        function gerarPDF() {
+            const elemento = document.getElementById('modalBody');
+            const titulo = elemento.querySelector('h2').innerText;
+            const opcoes = {
+                margin: 15,
+                filename: `CyberLearn_${titulo.replace(/ /g, '_')}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            elemento.classList.add('pdf-export');
+            html2pdf().set(opcoes).from(elemento).save().then(() => {
+                elemento.classList.remove('pdf-export');
+            });
+        }
+    </script>
 </body>
 </html>

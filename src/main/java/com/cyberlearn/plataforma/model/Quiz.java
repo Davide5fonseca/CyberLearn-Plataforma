@@ -14,8 +14,11 @@ public class Quiz {
     private Long id;
     
     private String titulo;
+    
+    private String descricao; // Adicionado para a descrição do quiz
+    
     private Integer pontosRecompensa;
 
-    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pergunta> perguntas;
 }

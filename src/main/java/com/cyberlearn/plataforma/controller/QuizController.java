@@ -1,10 +1,10 @@
 package com.cyberlearn.plataforma.controller;
 
 import com.cyberlearn.plataforma.model.Quiz;
-import com.cyberlearn.plataforma.model.Pergunta; // Importante para a lógica de validação
+import com.cyberlearn.plataforma.model.Pergunta;
 import com.cyberlearn.plataforma.repository.QuizRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity; // Necessário para a resposta da API
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,27 +16,26 @@ public class QuizController {
     @Autowired
     private QuizRepository quizRepository;
 
-    // Listar todos os quizzes disponíveis
     @GetMapping
     public List<Quiz> listarQuizzes() {
         return quizRepository.findAll();
     }
 
-    // Obter um quiz específico com as suas perguntas
     @GetMapping("/{id}")
     public Quiz obterQuiz(@PathVariable long id) { 
-        // O uso de 'long' (minúsculo) resolve o erro de Null type safety
-        return quizRepository.findById(id).orElseThrow();
+        // Resolve o "Null type safety" lançando uma exceção se não encontrar
+        return quizRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Quiz não encontrado com o ID: " + id));
     }
 
-    // NOVO: Método para validar as respostas do aluno e calcular o XP
     @PostMapping("/{id}/submeter")
     public ResponseEntity<?> validarRespostas(@PathVariable long id, @RequestBody List<String> respostasUtilizador) {
-        Quiz quiz = quizRepository.findById(id).orElseThrow();
+        Quiz quiz = quizRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Quiz não encontrado"));
+        
         List<Pergunta> perguntas = quiz.getPerguntas();
         int acertos = 0;
 
-        // Compara a resposta enviada pelo frontend com a correta na DB
         for (int i = 0; i < perguntas.size(); i++) {
             if (i < respostasUtilizador.size()) {
                 String respostaCorreta = perguntas.get(i).getRespostaCorreta();
@@ -47,8 +46,37 @@ public class QuizController {
         }
 
         double percentagem = ((double) acertos / perguntas.size()) * 100;
-        
-        // Retorna uma mensagem de sucesso com o desempenho
         return ResponseEntity.ok("Concluíste o quiz! Acertos: " + acertos + "/" + perguntas.size() + " (" + (int)percentagem + "%)");
+    }
+
+    // --- MÉTODOS PARA O PROFESSOR ---
+
+    @PostMapping
+    public Quiz criarQuiz(@RequestBody Quiz quiz) {
+        return quizRepository.save(quiz);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Quiz> editarQuiz(@PathVariable long id, @RequestBody Quiz quizAtualizado) {
+        // Resolve o erro de getDescricao() e os avisos de Null safety
+        return quizRepository.findById(id).map(quiz -> {
+            quiz.setTitulo(quizAtualizado.getTitulo());
+            quiz.setDescricao(quizAtualizado.getDescricao());
+            
+            if (quizAtualizado.getPerguntas() != null) {
+                quiz.getPerguntas().clear();
+                quiz.getPerguntas().addAll(quizAtualizado.getPerguntas());
+            }
+            
+            return ResponseEntity.ok(quizRepository.save(quiz));
+        }).orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> eliminarQuiz(@PathVariable long id) {
+        return quizRepository.findById(id).map(quiz -> {
+            quizRepository.delete(quiz);
+            return ResponseEntity.ok().build();
+        }).orElse(ResponseEntity.notFound().build());
     }
 }

@@ -1,21 +1,27 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CyberLearn - Dashboard</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <script>
-        // Configuração inicial do tema (Dark/Light)
+        // Inicialização do tema logo no carregamento
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         } else {
             document.documentElement.classList.remove('dark');
         }
 
+        // Função para alternar entre Dark e Light Mode
         function toggleDarkMode() {
             const html = document.documentElement;
             if (html.classList.contains('dark')) {
@@ -27,6 +33,7 @@
             }
         }
 
+        // Função de Logout
         function executarLogout() {
             localStorage.removeItem('userPoints');
             localStorage.removeItem('userName');
@@ -36,192 +43,158 @@
     </script>
 
     <style>
-        /* Transições suaves para mudança de tema e interações */
-        * { transition: background-color 0.4s ease, border-color 0.4s ease, color 0.4s ease; }
+        /* Transições rápidas e desativação de scroll global */
+        * { transition: background-color 0.2s ease, color 0.2s ease; }
+        body { height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        
+        /* Scrollbar personalizada para áreas internas */
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .dark .custom-scroll::-webkit-scrollbar-thumb { background: #475569; }
     </style>
 </head>
 
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans antialiased min-h-screen">
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-700 dark:text-slate-200 font-sans antialiased">
 
-    <nav class="bg-white dark:bg-gray-800 shadow-sm py-4 px-8 flex justify-between items-center sticky top-0 z-50 border-b border-transparent dark:border-gray-700">
-        <div class="flex items-center gap-3">
-            <div class="bg-blue-600 p-2 rounded-lg text-white shadow-lg shadow-blue-500/20">
-                <i class="fas fa-shield-alt text-xl"></i>
+    <nav class="h-12 bg-white dark:bg-slate-900 shadow-sm px-6 flex justify-between items-center z-50 border-b border-slate-200 dark:border-slate-800">
+        <div class="flex items-center gap-2">
+            <div class="bg-blue-600 p-1.5 rounded shadow-lg shadow-blue-500/20">
+                <i class="fas fa-shield-alt text-white text-sm"></i>
             </div>
-            <div>
-                <h1 class="font-bold text-lg leading-tight text-gray-900 dark:text-white">CyberLearn</h1>
-                <p class="text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-wider font-bold">Plataforma de Aprendizagem</p>
-            </div>
+            <span class="font-bold text-sm tracking-tight dark:text-white">CyberLearn</span>
         </div>
         
-        <div class="flex items-center gap-4">
-            <button onclick="toggleDarkMode()" 
-                    title="Alternar modo de cor"
-                    class="relative p-2.5 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-yellow-400 hover:bg-gray-200 dark:hover:bg-gray-600 active:scale-90 transition-all border border-gray-200 dark:border-gray-600">
-                <i class="fas fa-moon dark:hidden"></i>
-                <i class="fas fa-sun hidden dark:block"></i>
-            </button>
-
-            <div class="hidden md:flex items-center gap-3">
-                <div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 px-4 py-2 rounded-full text-sm font-medium">
-                    <i class="far fa-star text-yellow-500"></i> Nível 1
-                </div>
-                <div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 px-4 py-2 rounded-full text-sm font-medium border-l-4 border-blue-500">
-                    <i class="fas fa-coins text-blue-500"></i> <span id="nav-points">0</span> pts
-                </div>
+        <div class="flex items-center gap-4 text-xs font-semibold">
+            <div class="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-md border border-slate-200 dark:border-slate-700">
+                <i class="fas fa-coins text-blue-500"></i>
+                <span id="nav-points">0</span> <span class="text-slate-400 font-normal">XP</span>
             </div>
 
-            <button onclick="executarLogout()" title="Sair" class="text-gray-400 hover:text-red-500 p-2 transition-colors">
-                <i class="fas fa-sign-out-alt text-lg"></i>
+            <div class="h-6 w-px bg-slate-200 dark:bg-slate-800"></div>
+
+            <button onclick="toggleDarkMode()" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-yellow-400 hover:ring-2 hover:ring-blue-500 transition-all">
+                <i class="fas fa-moon block dark:hidden text-xs"></i>
+                <i class="fas fa-sun hidden dark:block text-xs"></i>
+            </button>
+
+            <button onclick="executarLogout()" class="text-slate-400 hover:text-red-500 transition-colors">
+                <i class="fas fa-sign-out-alt"></i>
             </button>
         </div>
     </nav>
 
-    <main class="max-w-6xl mx-auto px-6 py-12">
-        <header class="mb-12 flex justify-between items-center">
-            <div>
-                <h2 id="welcome-text" class="text-4xl font-extrabold mb-2 tracking-tight text-gray-900 dark:text-white leading-tight font-sans">Olá, Davide Fonseca! 👋</h2>
-                <p class="text-gray-500 dark:text-gray-400 text-lg">Acompanha o teu progresso e continua a aprender</p>
+    <main class="flex-1 grid grid-cols-12 gap-4 p-4 overflow-hidden">
+        
+        <aside class="col-span-3 flex flex-col gap-4">
+            <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-user text-blue-600 dark:text-blue-400"></i>
+                    </div>
+                    <div class="overflow-hidden">
+                        <h2 id="welcome-text" class="font-bold text-sm truncate dark:text-white">Utilizador</h2>
+                        <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Nível 1 • Iniciante</p>
+                    </div>
+                </div>
+                <a href="perfil.html" class="mt-4 block text-center py-2 bg-slate-50 dark:bg-slate-800 hover:bg-blue-600 hover:text-white rounded-lg text-[10px] font-bold transition-all">
+                    VER PERFIL COMPLETO
+                </a>
             </div>
-            <a href="perfil.html" title="Ver Perfil" class="inline-block bg-white dark:bg-gray-800 p-4 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-lg hover:-translate-y-1 transition-all group">
-                <i class="fas fa-user-circle text-gray-400 group-hover:text-blue-600 text-2xl"></i>
-            </a>
-        </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="flex-1 bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col overflow-hidden">
+                <h3 class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">Conquistas</h3>
+                <div class="flex-1 overflow-y-auto custom-scroll space-y-2">
+                    <div class="flex items-center gap-3 p-2 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700 opacity-40">
+                        <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-[10px]">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <span class="text-[10px] font-bold">Iniciante Cyber</span>
+                    </div>
+                    <div class="flex items-center gap-3 p-2 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700 opacity-40">
+                        <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-[10px]">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <span class="text-[10px] font-bold">Defensor Digital</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <div class="col-span-9 grid grid-rows-5 gap-4">
             
-            <section class="bg-white dark:bg-gray-800 p-8 rounded-[2.5rem] shadow-sm border border-gray-100 dark:border-gray-700">
-                <div class="flex items-center gap-3 mb-8">
-                    <div class="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
-                        <i class="fas fa-chart-line text-blue-600 dark:text-blue-400"></i>
+            <div class="row-span-2 bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm grid grid-cols-3 gap-6">
+                <div class="col-span-2 flex flex-col justify-center">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Progresso do Curso</h3>
+                    <div class="flex items-end justify-between mb-2">
+                        <span id="progress-percent" class="text-3xl font-black dark:text-white">0%</span>
+                        <span class="text-[10px] font-bold text-blue-500 uppercase">Módulos lidos 0/4</span>
                     </div>
-                    <h3 class="font-bold text-xl">O Teu Progresso</h3>
+                    <div class="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+                        <div id="progress-bar-fill" class="bg-blue-600 h-full w-0 transition-all duration-700"></div>
+                    </div>
                 </div>
+                <div class="flex flex-col justify-center gap-2 border-l border-slate-100 dark:border-slate-800 pl-6">
+                    <div class="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg">
+                        <p id="card-points" class="text-lg font-black text-blue-600 leading-none">0</p>
+                        <p class="text-[9px] uppercase font-bold text-slate-400 mt-1">Total XP</p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg">
+                        <p id="card-medals" class="text-lg font-black text-purple-600 leading-none">0</p>
+                        <p class="text-[9px] uppercase font-bold text-slate-400 mt-1">Medalhas</p>
+                    </div>
+                </div>
+            </div>
 
-                <div class="space-y-6">
+            <div class="row-span-3 grid grid-cols-2 gap-4">
+                <a href="modulos.html" class="group bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-blue-500 transition-all flex flex-col justify-between">
+                    <div class="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 rounded-lg flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                        <i class="fas fa-graduation-cap text-lg"></i>
+                    </div>
                     <div>
-                        <div class="flex justify-between text-sm font-medium mb-3">
-                            <span class="text-gray-500 dark:text-gray-400">Módulos completos</span>
-                            <span class="text-blue-600 dark:text-blue-400">0/4</span>
-                        </div>
-                        <div class="w-full bg-gray-100 dark:bg-gray-700 h-3 rounded-full overflow-hidden">
-                            <div id="progress-bar-fill" class="bg-blue-600 h-full w-[0%] transition-all duration-1000"></div>
-                        </div>
-                        <p id="progress-percent" class="text-xs text-gray-400 mt-3 italic">0% concluído</p>
+                        <h4 class="text-base font-bold dark:text-white leading-tight">Módulos de Estudo</h4>
+                        <p class="text-xs text-slate-400 mt-1">Guia completo para a tua proteção online.</p>
                     </div>
+                </a>
 
-                    <div class="grid grid-cols-3 gap-4 pt-4 text-center">
-                        <div class="p-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-transparent dark:border-gray-700">
-                            <p class="text-2xl font-black text-blue-600">1</p>
-                            <p class="text-[10px] uppercase text-gray-400 font-bold tracking-tighter">Nível</p>
-                        </div>
-                        <div class="p-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-transparent dark:border-gray-700">
-                            <p id="card-points" class="text-2xl font-black">0</p>
-                            <p class="text-[10px] uppercase text-gray-400 font-bold tracking-tighter">Pontos</p>
-                        </div>
-                        <div class="p-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-transparent dark:border-gray-700">
-                            <p id="card-medals" class="text-2xl font-black">0</p>
-                            <p class="text-[10px] uppercase text-gray-400 font-bold tracking-tighter">Medalhas</p>
-                        </div>
+                <a href="quiz.html" class="group bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-emerald-500 transition-all flex flex-col justify-between">
+                    <div class="w-10 h-10 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg flex items-center justify-center text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-all">
+                        <i class="fas fa-vial text-lg"></i>
                     </div>
-                </div>
-            </section>
-
-            <section class="bg-white dark:bg-gray-800 p-8 rounded-[2.5rem] shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col items-center justify-center text-center leading-relaxed">
-                <div class="w-full text-left flex items-center gap-3 mb-8">
-                    <div class="p-2 bg-yellow-50 dark:bg-yellow-900/30 rounded-lg text-yellow-600 dark:text-yellow-400">
-                        <i class="fas fa-trophy"></i>
+                    <div>
+                        <h4 class="text-base font-bold dark:text-white leading-tight">Desafios de Conhecimento</h4>
+                        <p class="text-xs text-slate-400 mt-1">Testa-te agora e sobe na classificação.</p>
                     </div>
-                    <h3 class="font-bold text-xl">Classificação</h3>
-                </div>
-                <div class="py-6">
-                    <i class="fas fa-users-viewfinder text-5xl text-gray-100 dark:text-gray-700 mb-4"></i>
-                    <p class="text-gray-400 dark:text-gray-500 font-medium">Top 10 Alunos CyberLearn</p>
-                    <p class="text-[10px] text-gray-300 dark:text-gray-600 mt-2 italic underline decoration-dotted underline-offset-4">Ainda não há dados disponíveis</p>
-                </div>
-            </section>
-
-            <section class="bg-white dark:bg-gray-800 p-8 rounded-[2.5rem] shadow-sm border border-gray-100 dark:border-gray-700">
-                <div class="flex items-center gap-3 mb-8">
-                    <div class="p-2 bg-purple-50 dark:bg-purple-900/30 rounded-lg text-purple-600 dark:text-purple-400">
-                        <i class="fas fa-medal"></i>
-                    </div>
-                    <h3 class="font-bold text-xl">As Tuas Medalhas</h3>
-                </div>
-                <div class="grid grid-cols-4 gap-4 opacity-20 grayscale transition-opacity">
-                    <div class="aspect-square bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-600"><i class="fas fa-lock text-gray-400"></i></div>
-                    <div class="aspect-square bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-600"><i class="fas fa-lock text-gray-400"></i></div>
-                    <div class="aspect-square bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-600"><i class="fas fa-lock text-gray-400"></i></div>
-                    <div class="aspect-square bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-600"><i class="fas fa-lock text-gray-400"></i></div>
-                </div>
-                <p class="text-center text-xs text-gray-400 mt-8 italic">Completa quizzes para desbloquear conquistas!</p>
-            </section>
-
-            <div class="space-y-6">
-                <section class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 flex justify-between items-center group hover:shadow-md transition-all">
-                    <div class="flex gap-4 items-center">
-                        <div class="bg-blue-100 dark:bg-blue-900/50 p-4 rounded-2xl text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform">
-                            <i class="fas fa-book-open text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">Explorar Módulos</h3>
-                            <p class="text-xs text-gray-400 mt-1">Lê os guias de segurança (4 disponíveis)</p>
-                        </div>
-                    </div>
-                    <a href="modulos.html" class="inline-flex items-center justify-center bg-gray-900 dark:bg-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-black dark:hover:bg-blue-500 transition-all shadow-md active:scale-95 whitespace-nowrap">
-                        Ver Todos
-                    </a>
-                </section>
-
-                <section class="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 flex justify-between items-center group hover:shadow-md transition-all">
-                    <div class="flex gap-4 items-center">
-                        <div class="bg-emerald-100 dark:bg-emerald-900/50 p-4 rounded-2xl text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform">
-                            <i class="fas fa-brain text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-lg text-gray-900 dark:text-white">Iniciar Quiz</h3>
-                            <p class="text-xs text-gray-400 mt-1">Testa os teus conhecimentos agora</p>
-                        </div>
-                    </div>
-                    <a href="quiz.html" class="inline-flex items-center justify-center bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold hover:shadow-lg transition-all active:scale-95 shadow-md whitespace-nowrap">
-                        Iniciar
-                    </a>
-                </section>
+                </a>
             </div>
         </div>
     </main>
 
-    <footer class="mt-20 py-10 text-center border-t border-gray-100 dark:border-gray-800">
-        <p class="text-[10px] text-gray-400 uppercase tracking-widest font-black">&copy; 2026 CyberLearn - Projecto de Davide Fonseca</p>
-    </footer>
-
     <script>
         function atualizarInterface() {
+            // Recuperar dados do localStorage
             const pontos = parseInt(localStorage.getItem('userPoints')) || 0;
-            const nome = localStorage.getItem('userName') || "Utilizador";
+            const nome = localStorage.getItem('userName') || "Explorador";
 
+            // Aplicar Nome e Pontos nos IDs correspondentes
             const welcomeHeader = document.getElementById('welcome-text');
-            if (welcomeHeader) {
-                welcomeHeader.innerText = `Olá, ${nome}! 👋`;
-            }
+            if (welcomeHeader) welcomeHeader.innerText = nome;
 
             document.getElementById('nav-points').innerText = pontos;
             document.getElementById('card-points').innerText = pontos;
 
+            // Lógica de Medalhas (1 medalha por cada 20 pontos)
             const medalhas = Math.floor(pontos / 20);
             const cardMedals = document.getElementById('card-medals');
             if(cardMedals) cardMedals.innerText = medalhas;
 
+            // Atualização da Barra de Progresso (Baseada numa meta de 50 pts)
             const percentagem = Math.min((pontos / 50) * 100, 100);
             const progressBar = document.getElementById('progress-bar-fill');
             const progressText = document.getElementById('progress-percent');
 
-            if (progressBar) {
-                progressBar.style.width = `${percentagem}%`;
-            }
-            if (progressText) {
-                progressText.innerText = `${Math.floor(percentagem)}% concluído`;
-            }
+            if (progressBar) progressBar.style.width = `${percentagem}%`;
+            if (progressText) progressText.innerText = `${Math.floor(percentagem)}%`;
         }
 
         window.onload = atualizarInterface;

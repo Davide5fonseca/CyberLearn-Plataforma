@@ -1,10 +1,14 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CyberLearn - Quiz Phishing</title>
+    <title>CyberLearn - Desafios</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <script>
@@ -13,137 +17,186 @@
         } else {
             document.documentElement.classList.remove('dark');
         }
+
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            html.classList.toggle('dark');
+            localStorage.theme = html.classList.contains('dark') ? 'dark' : 'light';
+        }
+
+        function executarLogout() {
+            localStorage.clear();
+            window.location.href = "index.html";
+        }
     </script>
 
     <style>
-        * { transition: all 0.3s ease; }
-        .option-btn:hover { transform: translateX(8px); }
+        * { transition: background-color 0.2s ease, color 0.2s ease; }
+        body { height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        .option-btn:hover { transform: translateX(5px); }
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 min-h-screen font-sans antialiased text-gray-800 dark:text-gray-100">
 
-    <nav class="p-6 flex justify-between items-center max-w-4xl mx-auto">
-        <a href="dashboard.html" class="text-cyan-500 hover:text-cyan-400 font-bold flex items-center gap-2">
-            <i class="fas fa-arrow-left text-sm"></i> Sair do Quiz
-        </a>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-700 dark:text-slate-200 font-sans antialiased">
+
+    <nav class="h-12 bg-white dark:bg-slate-900 shadow-sm px-6 flex justify-between items-center z-50 border-b border-slate-200 dark:border-slate-800">
         <div class="flex items-center gap-2">
-            <span id="progress-text" class="text-sm font-bold text-gray-400 uppercase tracking-widest">Pergunta 1 de 5</span>
+            <div class="bg-blue-600 p-1.5 rounded shadow-lg shadow-blue-500/20">
+                <i class="fas fa-shield-alt text-white text-sm"></i>
+            </div>
+            <span class="font-bold text-sm tracking-tight dark:text-white">CyberLearn</span>
+        </div>
+        
+        <div class="flex items-center gap-4 text-xs font-semibold">
+            <a href="dashboard.html" class="text-blue-600 dark:text-blue-400 hover:underline">
+                <i class="fas fa-arrow-left mr-1"></i> Dashboard
+            </a>
+            <div class="h-6 w-px bg-slate-200 dark:bg-slate-800"></div>
+            <button onclick="toggleDarkMode()" class="text-slate-400 hover:text-blue-500">
+                <i class="fas fa-moon dark:hidden text-xs"></i>
+                <i class="fas fa-sun hidden dark:block text-xs"></i>
+            </button>
+            <button onclick="executarLogout()" class="text-slate-400 hover:text-red-500">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
         </div>
     </nav>
 
-    <main class="max-w-2xl mx-auto px-4 py-8">
-        <div class="w-full bg-gray-200 dark:bg-gray-800 h-2 rounded-full mb-12 overflow-hidden">
-            <div id="progress-bar" class="bg-cyan-500 h-full w-1/5 transition-all duration-500"></div>
-        </div>
+    <main class="flex-1 p-6 flex flex-col items-center justify-center overflow-hidden">
+        
+        <div id="selection-screen" class="w-full max-w-4xl">
+            <header class="mb-8 text-center">
+                <h2 class="text-2xl font-black tracking-tight dark:text-white">Escolhe o teu Desafio 🧠</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Cada quiz tem 6 perguntas. Ganha 10 XP por acerto.</p>
+            </header>
 
-        <div id="quiz-container" class="bg-white dark:bg-gray-800 p-8 md:p-12 rounded-[2.5rem] shadow-2xl border border-gray-100 dark:border-gray-700">
-            
-            <div id="question-area">
-                <div class="bg-blue-600/10 text-blue-600 dark:text-blue-400 w-fit px-4 py-1 rounded-full text-xs font-black uppercase mb-6 tracking-widest">
-                    Segurança Digital
-                </div>
-                <h2 id="question-text" class="text-2xl md:text-3xl font-black mb-10 leading-tight">
-                    A carregar pergunta...
-                </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <button onclick="startQuiz('phishing')" class="group bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-cyan-500 transition-all text-left flex items-center gap-4">
+                    <div class="w-12 h-12 bg-cyan-50 dark:bg-cyan-900/20 text-cyan-600 rounded-lg flex items-center justify-center text-xl"><i class="fas fa-fish"></i></div>
+                    <div><h3 class="font-bold text-sm dark:text-white">Phishing</h3><p class="text-[10px] text-slate-400">Identifica iscos e burlas.</p></div>
+                </button>
 
-                <div id="options-container" class="space-y-4">
-                    </div>
-            </div>
+                <button onclick="startQuiz('redes')" class="group bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-pink-500 transition-all text-left flex items-center gap-4">
+                    <div class="w-12 h-12 bg-pink-50 dark:bg-pink-900/20 text-pink-600 rounded-lg flex items-center justify-center text-xl"><i class="fas fa-share-alt"></i></div>
+                    <div><h3 class="font-bold text-sm dark:text-white">Redes Sociais</h3><p class="text-[10px] text-slate-400">Privacidade e conduta.</p></div>
+                </button>
 
-            <div id="result-area" class="hidden text-center py-10">
-                <div class="text-6xl mb-6">🏆</div>
-                <h2 class="text-4xl font-black mb-4">Quiz Terminado!</h2>
-                <p class="text-xl text-gray-500 dark:text-gray-400 mb-8">Conseguiste acertar <span id="final-score" class="text-cyan-500 font-bold">0</span> de 5 perguntas.</p>
-                <button onclick="location.reload()" class="bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-2xl font-bold shadow-lg transition-all active:scale-95">
-                    Tentar Novamente
+                <button onclick="startQuiz('passwords')" class="group bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-blue-500 transition-all text-left flex items-center gap-4">
+                    <div class="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-lg flex items-center justify-center text-xl"><i class="fas fa-key"></i></div>
+                    <div><h3 class="font-bold text-sm dark:text-white">Passwords</h3><p class="text-[10px] text-slate-400">Segurança de contas.</p></div>
+                </button>
+
+                <button onclick="startQuiz('malware')" class="group bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-red-500 transition-all text-left flex items-center gap-4">
+                    <div class="w-12 h-12 bg-red-50 dark:bg-red-900/20 text-red-600 rounded-lg flex items-center justify-center text-xl"><i class="fas fa-virus-slash"></i></div>
+                    <div><h3 class="font-bold text-sm dark:text-white">Malware</h3><p class="text-[10px] text-slate-400">Vírus e ameaças.</p></div>
                 </button>
             </div>
         </div>
+
+        <div id="quiz-screen" class="hidden w-full max-w-xl bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl">
+            <div class="flex justify-between items-center mb-6">
+                <span id="quiz-category" class="text-[10px] font-black uppercase text-blue-600 tracking-widest">Categoria</span>
+                <span id="quiz-progress" class="text-[10px] font-bold text-slate-400">Pergunta 1/6</span>
+            </div>
+            
+            <div class="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full mb-8 overflow-hidden">
+                <div id="progress-bar" class="bg-blue-600 h-full w-0 transition-all duration-500"></div>
+            </div>
+
+            <h2 id="question-text" class="text-base font-bold mb-8 dark:text-white leading-tight">Carregando...</h2>
+            
+            <div id="options-container" class="space-y-3"></div>
+        </div>
+
+        <div id="result-screen" class="hidden w-full max-w-sm bg-white dark:bg-slate-900 p-10 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl text-center">
+            <div class="text-5xl mb-4">🏆</div>
+            <h2 class="text-xl font-black dark:text-white mb-2">Quiz Terminado!</h2>
+            <p class="text-xs text-slate-500 mb-6">Acertaste <span id="final-score" class="font-bold text-blue-600">0</span> de 6 perguntas.</p>
+            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl mb-8">
+                <p class="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">Pontos Totais Ganhos</p>
+                <p id="points-earned" class="text-2xl font-black text-slate-800 dark:text-white">+0 XP</p>
+            </div>
+            <button onclick="location.reload()" class="w-full bg-blue-600 text-white py-3 rounded-lg text-xs font-bold hover:bg-blue-700 transition">Voltar ao Menu</button>
+        </div>
+
     </main>
 
     <script>
-        const questions = [
-            {
-                q: "O que define um ataque de 'Phishing'?",
-                options: [
-                    "Um vírus que apaga ficheiros do sistema.",
-                    "Emails falsos para roubar dados sensíveis.",
-                    "Um programa que acelera a internet.",
-                    "Um ataque físico ao servidor."
-                ],
-                correct: 1
-            },
-            {
-                q: "Qual destes é um sinal comum de Phishing?",
-                options: [
-                    "Linguagem profissional e sem erros.",
-                    "Links que levam ao site oficial.",
-                    "Sentido de urgência e ameaças de bloqueio.",
-                    "O uso do teu nome completo correto."
-                ],
-                correct: 2
-            },
-            {
-                q: "O que deves fazer antes de clicar num link num email?",
-                options: [
-                    "Clicar rapidamente para ver se funciona.",
-                    "Passar o rato por cima para ver o URL real.",
-                    "Responder ao email a perguntar se é seguro.",
-                    "Reencaminhar para todos os amigos."
-                ],
-                correct: 1
-            },
-            {
-                q: "O que é 'Spear Phishing'?",
-                options: [
-                    "Um ataque disparado para milhões de pessoas.",
-                    "Um ataque direcionado a uma pessoa específica.",
-                    "Um tipo de hardware de rede.",
-                    "Uma técnica de proteção de passwords."
-                ],
-                correct: 1
-            },
-            {
-                q: "Qual a melhor defesa contra Phishing?",
-                options: [
-                    "Não usar email de todo.",
-                    "Instalar apenas um antivírus grátis.",
-                    "Usar MFA (Autenticação Multi-fator).",
-                    "Escrever as passwords num papel."
-                ],
-                correct: 2
-            }
-        ];
+        const allQuizzes = {
+            phishing: [
+                { q: "Recebes um email urgente a dizer que a tua conta bancária será bloqueada se não clicares num link. O que fazes?", options: ["Clico logo para evitar o bloqueio.", "Apago e contacto o banco pelo número oficial.", "Respondo ao email a pedir explicações.", "Clico apenas para ver o que pedem."], correct: 1 },
+                { q: "Qual destes elementos é um sinal claro de uma mensagem de Phishing?", options: ["O teu nome completo escrito corretamente.", "Erros de português e gramática estranha.", "O logótipo da empresa em alta resolução.", "O email vir de um contacto conhecido."], correct: 1 },
+                { q: "O que deves verificar antes de clicar num link num email suspeito?", options: ["Se a imagem do email é bonita.", "Passar o rato por cima para ver o URL real.", "Se o email chegou rápido.", "Se o remetente tem foto de perfil."], correct: 1 },
+                { q: "O que é 'Smishing'?", options: ["Phishing feito através de redes sociais.", "Phishing feito através de chamadas de voz.", "Phishing feito através de mensagens SMS.", "Um tipo de antivírus."], correct: 2 },
+                { q: "Se um site pede os teus dados e o URL não começa por 'https://', o que deves fazer?", options: ["Preencher, o 's' não é importante.", "Não colocar dados, a ligação não é segura.", "Pedir a um amigo para testar primeiro.", "Usar uma password simples."], correct: 1 },
+                { q: "Um amigo envia-te um link estranho pelo chat sem contexto nenhum. Qual o risco?", options: ["Nenhum, é meu amigo.", "A conta dele pode ter sido hackeada.", "O link é certamente uma prenda.", "O computador dele está mais rápido."], correct: 1 }
+            ],
+            redes: [
+                { q: "O que significa o termo 'Pegada Digital'?", options: ["A marca física no ecrã do telemóvel.", "O rasto de dados que deixas online para sempre.", "O número de seguidores que tens.", "A velocidade da tua internet."], correct: 1 },
+                { q: "Deves partilhar fotos que mostrem a tua morada ou escola?", options: ["Sim, para os meus amigos me visitarem.", "Não, estranhos podem usar isso para me localizar.", "Apenas se a foto tiver muitos filtros.", "Sim, mas apago depois de uma hora."], correct: 1 },
+                { q: "Quem deve poder ver as tuas publicações privadas?", options: ["Qualquer pessoa na internet.", "Apenas amigos que conheces na vida real.", "Amigos de amigos de amigos.", "Toda a gente que tenha a app instalada."], correct: 1 },
+                { q: "O que deves fazer se fores vítima de Cyberbullying?", options: ["Responder com insultos mais fortes.", "Guardar provas (prints) e denunciar aos adultos.", "Apagar a conta e nunca mais falar com ninguém.", "Fingir que não aconteceu nada."], correct: 1 },
+                { q: "As fotos que apagas das redes sociais desaparecem mesmo?", options: ["Sim, são eliminadas do mundo inteiro.", "Não, alguém pode ter guardado ou estar no servidor.", "Sim, se eu clicar no botão 'Eliminar'.", "Depende da rede social."], correct: 1 },
+                { q: "Qual o perigo de aceitar desconhecidos em redes sociais?", options: ["Nenhum, fazer amigos é bom.", "Podem ser perfis falsos a tentar obter dados.", "A aplicação pode ficar mais lenta.", "O telemóvel gasta mais bateria."], correct: 1 }
+            ],
+            passwords: [
+                { q: "Qual destas passwords é a mais difícil de um hacker descobrir?", options: ["12345678", "NomeDoMeuCao123", "Gato!Azul?2024*Corre", "password2024"], correct: 2 },
+                { q: "Para que serve a Autenticação de Dois Fatores (2FA/MFA)?", options: ["Para carregar o site mais rápido.", "Para dar uma segunda camada de segurança.", "Para não ter de decorar a password.", "Para partilhar a conta com amigos."], correct: 1 },
+                { q: "Deves usar a mesma password em vários sites diferentes?", options: ["Sim, é mais fácil de decorar.", "Não, se um site for hackeado, todos os outros ficam em risco.", "Sim, desde que a password seja longa.", "Apenas em sites de confiança."], correct: 1 },
+                { q: "O que é um Gestor de Passwords?", options: ["Uma pessoa que guarda as tuas chaves.", "Uma app que cria e guarda passwords seguras por ti.", "Um caderno onde escreves tudo à mão.", "Um vírus que rouba códigos."], correct: 1 },
+                { q: "Com que frequência deves rever as tuas passwords mais importantes?", options: ["Nunca, se forem difíceis.", "Todos os dias.", "Regularmente ou sempre que houver um leak.", "Apenas quando me esqueço delas."], correct: 2 },
+                { q: "Qual o risco de guardar as passwords num ficheiro 'passwords.txt' no ambiente de trabalho?", options: ["Nenhum, ninguém mexe no meu PC.", "Qualquer vírus ou pessoa com acesso vê tudo.", "O computador fica mais lento.", "O ficheiro pode ser apagado por erro."], correct: 1 }
+            ],
+            malware: [
+                { q: "O que é o 'Ransomware'?", options: ["Um programa de edição de fotos.", "Vírus que bloqueia ficheiros e pede dinheiro (resgate).", "Um tipo de rede social nova.", "Um componente do hardware."], correct: 1 },
+                { q: "Qual o principal objetivo de um 'Spyware'?", options: ["Acelerar o computador.", "Vigiar o que fazes e roubar informações.", "Limpar ficheiros desnecessários.", "Aumentar a resolução do monitor."], correct: 1 },
+                { q: "Deves instalar atualizações do sistema operativo mal elas apareçam?", options: ["Não, gastam muito espaço.", "Sim, corrigem falhas de segurança críticas.", "Apenas se o computador estiver com erros.", "Só quando comprar um PC novo."], correct: 1 },
+                { q: "O que define um 'Cavalo de Troia' (Trojan)?", options: ["Um vírus que se multiplica sozinho.", "Software que parece útil mas esconde malware.", "Um jogo de estratégia grego.", "Um antivírus muito potente."], correct: 1 },
+                { q: "Qual a melhor forma de proteger o telemóvel de malware?", options: ["Não usar Wi-Fi.", "Instalar apps apenas de lojas oficiais (Google/Apple).", "Manter o Bluetooth sempre ligado.", "Deixar a bateria chegar a 0%."], correct: 1 },
+                { q: "O que deves fazer se o teu Antivírus detetar uma ameaça?", options: ["Ignorar e continuar a trabalhar.", "Colocar em quarentena ou eliminar o ficheiro.", "Desinstalar o antivírus para ele não chatear.", "Formatar o computador imediatamente."], correct: 1 }
+            ]
+        };
 
+        let currentQuestions = [];
         let currentIndex = 0;
         let score = 0;
+        let currentCatName = "";
+
+        function startQuiz(category) {
+            currentQuestions = allQuizzes[category];
+            currentCatName = category.toUpperCase();
+            currentIndex = 0;
+            score = 0;
+            document.getElementById('selection-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            document.getElementById('quiz-category').innerText = currentCatName;
+            loadQuestion();
+        }
 
         function loadQuestion() {
-            const q = questions[currentIndex];
+            const q = currentQuestions[currentIndex];
             document.getElementById('question-text').innerText = q.q;
-            document.getElementById('progress-text').innerText = `Pergunta ${currentIndex + 1} de ${questions.length}`;
-            document.getElementById('progress-bar').style.width = `${((currentIndex + 1) / questions.length) * 100}%`;
+            document.getElementById('quiz-progress').innerText = `Pergunta ${currentIndex + 1}/${currentQuestions.length}`;
+            document.getElementById('progress-bar').style.width = `${((currentIndex + 1) / currentQuestions.length) * 100}%`;
 
             const container = document.getElementById('options-container');
             container.innerHTML = '';
 
             q.options.forEach((opt, index) => {
                 const btn = document.createElement('button');
-                btn.className = "option-btn w-full text-left p-5 rounded-2xl bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 font-medium hover:border-cyan-500 dark:hover:border-cyan-500 hover:bg-cyan-500/5 transition-all flex justify-between items-center group";
-                btn.innerHTML = `<span>${opt}</span> <i class="fas fa-chevron-right text-gray-300 group-hover:text-cyan-500 transition"></i>`;
+                btn.className = "option-btn w-full text-left p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium hover:border-blue-500 transition-all flex justify-between items-center group";
+                btn.innerHTML = `<span>${opt}</span> <i class="fas fa-chevron-right text-slate-300 group-hover:text-blue-500 transition"></i>`;
                 btn.onclick = () => checkAnswer(index);
                 container.appendChild(btn);
             });
         }
 
         function checkAnswer(selected) {
-            if (selected === questions[currentIndex].correct) {
-                score++;
-            }
-
+            if (selected === currentQuestions[currentIndex].correct) score++;
             currentIndex++;
-
-            if (currentIndex < questions.length) {
+            if (currentIndex < currentQuestions.length) {
                 loadQuestion();
             } else {
                 showResult();
@@ -151,16 +204,15 @@
         }
 
         function showResult() {
-            document.getElementById('question-area').classList.add('hidden');
-            document.getElementById('result-area').classList.remove('hidden');
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
             document.getElementById('final-score').innerText = score;
-            
-            // Guardar pontos no localStorage para o Dashboard usar
-            const totalPoints = score * 10;
-            localStorage.setItem('userPoints', totalPoints);
-        }
+            const pointsEarned = score * 10;
+            document.getElementById('points-earned').innerText = `+${pointsEarned} XP`;
 
-        loadQuestion();
+            const currentTotal = parseInt(localStorage.getItem('userPoints')) || 0;
+            localStorage.setItem('userPoints', currentTotal + pointsEarned);
+        }
     </script>
 </body>
 </html>
