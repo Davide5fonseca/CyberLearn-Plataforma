@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <script>
+        // Lógica de Inicialização do Tema
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         } else {
@@ -54,11 +55,11 @@
                 <i class="fas fa-arrow-left mr-1"></i> Dashboard
             </a>
             <div class="h-6 w-px bg-slate-200 dark:bg-slate-800"></div>
-            <button onclick="toggleDarkMode()" class="text-slate-400 hover:text-blue-500">
+            <button onclick="toggleDarkMode()" class="text-slate-400 hover:text-blue-500 transition-colors">
                 <i class="fas fa-moon dark:hidden text-xs"></i>
                 <i class="fas fa-sun hidden dark:block text-xs"></i>
             </button>
-            <button onclick="executarLogout()" class="text-slate-400 hover:text-red-500">
+            <button onclick="executarLogout()" class="text-slate-400 hover:text-red-500 transition-colors">
                 <i class="fas fa-sign-out-alt"></i>
             </button>
         </div>
@@ -203,16 +204,33 @@
             }
         }
 
-        function showResult() {
-            document.getElementById('quiz-screen').classList.add('hidden');
-            document.getElementById('result-screen').classList.remove('hidden');
-            document.getElementById('final-score').innerText = score;
-            const pointsEarned = score * 10;
-            document.getElementById('points-earned').innerText = `+${pointsEarned} XP`;
+        // FUNÇÃO ATUALIZADA PARA GRAVAR NA BASE DE DADOS
+async function showResult() {
+    document.getElementById('quiz-screen').classList.add('hidden');
+    document.getElementById('result-screen').classList.remove('hidden');
+    document.getElementById('final-score').innerText = score;
+    const pointsEarned = score * 10;
+    document.getElementById('points-earned').innerText = `+${pointsEarned} XP`;
 
-            const currentTotal = parseInt(localStorage.getItem('userPoints')) || 0;
-            localStorage.setItem('userPoints', currentTotal + pointsEarned);
-        }
+    // Atualiza localmente
+    const currentTotal = parseInt(localStorage.getItem('userPoints')) || 0;
+    localStorage.setItem('userPoints', currentTotal + pointsEarned);
+
+    // ENVIA PARA A BASE DE DADOS
+    const userEmail = localStorage.getItem('userEmail');
+    if(userEmail) {
+        await fetch('/api/usuarios/guardar-nota', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: userEmail,
+                categoria: currentCatName,
+                nota: score,
+                xp: pointsEarned
+            })
+        });
+    }
+}
     </script>
 </body>
 </html>

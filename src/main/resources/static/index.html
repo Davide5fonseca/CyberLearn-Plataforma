@@ -104,19 +104,33 @@
     </main>
 
     <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            
-            // Simulação de login para manter os dados no Dashboard
-            const nomeSimulado = email.split('@')[0];
-            localStorage.setItem('userName', nomeSimulado.charAt(0).toUpperCase() + nomeSimulado.slice(1));
-            localStorage.setItem('userPoints', '0');
-            localStorage.setItem('userPerfil', 'ALUNO');
-            
-            window.location.href = "dashboard.html";
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    try {
+        const response = await fetch('/api/usuarios/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email, passwordHash: password })
         });
+
+        if (response.ok) {
+            const user = await response.json();
+            localStorage.setItem('userName', user.nome);
+            localStorage.setItem('userEmail', user.email); // CRÍTICO: Guardar o email
+            localStorage.setItem('userPerfil', user.perfil);
+            
+            // Redireciona conforme o perfil
+            window.location.href = (user.perfil === 'PROFESSOR') ? "professor.html" : "dashboard.html";
+        } else {
+            alert("Credenciais inválidas");
+        }
+    } catch (error) {
+        alert("Erro ao ligar ao servidor.");
+    }
+});
     </script>
 </body>
 </html>

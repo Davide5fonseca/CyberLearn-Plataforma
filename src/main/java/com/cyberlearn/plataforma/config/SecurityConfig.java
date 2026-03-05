@@ -12,18 +12,26 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
 
-    @Bean
+@Bean
 public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
-            // Permite ver o login, o registo e o dashboard sem bloqueios iniciais
-            .requestMatchers("/index.html", "/registo.html", "/dashboard.html", "/css/**", "/api/usuarios/**").permitAll()
-            .requestMatchers("/dashboard.html", "/quiz.html", "/modulos.html", "/perfil.html","/recuperar.html","/reset-senha.html").permitAll()
+            // 1. Permitir recursos estáticos e APIs de acesso
+            .requestMatchers(
+                "/index.html", "/registo.html", "/recuperar.html", "/reset-senha.html",
+                "/css/**", "/js/**", "/img/**",
+                "/api/usuarios/**" // Permite todas as chamadas à API de utilizadores
+            ).permitAll()
+
+            // 2. Permitir que o navegador carregue as páginas (a proteção será via JS abaixo)
+            .requestMatchers(
+                "/dashboard.html", "/quiz.html", "/modulos.html", 
+                "/perfil.html", "/professor.html","/alunos.html"
+            ).permitAll() 
+
             .anyRequest().authenticated()
         )
-        .formLogin(form -> form.disable()); // Desativa o formulário padrão cinzento
+        .formLogin(form -> form.disable());
     return http.build();
 }
-
-
-    }
+}
