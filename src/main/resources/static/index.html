@@ -75,6 +75,12 @@
                                 class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl py-3 pl-11 pr-4 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all dark:text-white"
                                 placeholder="••••••••">
                         </div>
+                        
+                        <div class="flex justify-end mt-2">
+                            <a href="recuperar.html" class="text-[10px] font-extrabold text-blue-600 dark:text-blue-400 hover:underline uppercase tracking-widest transition-colors">
+                                Esqueceste-te da senha?
+                            </a>
+                        </div>
                     </div>
 
                     <div class="pt-2">
@@ -97,10 +103,6 @@
         </div>
     </main>
 
-    <footer class="h-12 flex items-center justify-center border-t border-slate-200 dark:border-slate-800">
-        <p class="text-[9px] font-black uppercase tracking-[0.3em] text-slate-400">&copy; 2026 CyberLearn • Davide Fonseca</p>
-    </footer>
-
     <script>
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -108,7 +110,6 @@
             const email = document.getElementById('email').value;
             
             // Simulação de login para manter os dados no Dashboard
-            // No futuro, aqui farás o fetch para o teu backend Java
             const nomeSimulado = email.split('@')[0];
             localStorage.setItem('userName', nomeSimulado.charAt(0).toUpperCase() + nomeSimulado.slice(1));
             localStorage.setItem('userPoints', '0');

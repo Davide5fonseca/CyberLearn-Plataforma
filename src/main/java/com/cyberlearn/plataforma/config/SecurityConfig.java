@@ -18,10 +18,12 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         .authorizeHttpRequests(auth -> auth
             // Permite ver o login, o registo e o dashboard sem bloqueios iniciais
             .requestMatchers("/index.html", "/registo.html", "/dashboard.html", "/css/**", "/api/usuarios/**").permitAll()
-            .requestMatchers("/dashboard.html", "/quiz.html", "/modulos.html", "/perfil.html").permitAll()
+            .requestMatchers("/dashboard.html", "/quiz.html", "/modulos.html", "/perfil.html","/recuperar.html","/reset-senha.html").permitAll()
             .anyRequest().authenticated()
         )
         .formLogin(form -> form.disable()); // Desativa o formulário padrão cinzento
     return http.build();
 }
+
+
     }

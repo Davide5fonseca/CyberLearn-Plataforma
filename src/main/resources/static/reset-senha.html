@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberLearn - Redefinir Senha</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <script>
+        // Lógica de Inicialização do Tema
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            html.classList.toggle('dark');
+            localStorage.theme = html.classList.contains('dark') ? 'dark' : 'light';
+        }
+    </script>
+
+    <style>
+        * { transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
+        body { height: 100vh; display: flex; align-items: center; justify-content: center; }
+    </style>
+</head>
+
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-700 dark:text-slate-200 font-sans antialiased p-6">
+
+    <div class="fixed top-6 right-6 z-50">
+        <button onclick="toggleDarkMode()" class="p-2.5 rounded-xl bg-white dark:bg-slate-900 shadow-sm border border-slate-200 dark:border-slate-800 text-slate-500 dark:text-yellow-400 hover:scale-110 transition-all">
+            <i class="fas fa-moon dark:hidden"></i>
+            <i class="fas fa-sun hidden dark:block"></i>
+        </button>
+    </div>
+
+    <div class="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 p-8">
+        <div class="text-center mb-8">
+            <div class="inline-flex bg-blue-600 p-3 rounded-xl shadow-lg mb-4">
+                <i class="fas fa-key text-white text-xl"></i>
+            </div>
+            <h1 class="text-2xl font-black dark:text-white">Nova Palavra-passe</h1>
+            <p class="text-sm text-slate-500 mt-2">Escolhe uma senha segura para a tua conta.</p>
+        </div>
+
+        <form onsubmit="event.preventDefault(); alterarSenha();" class="space-y-4">
+            <div>
+                <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">Nova Senha</label>
+                <div class="relative">
+                    <i class="fas fa-lock absolute left-4 top-3.5 text-slate-400"></i>
+                    <input type="password" id="novaSenha" required placeholder="••••••••"
+                        class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl py-3 pl-11 pr-4 text-sm focus:ring-2 focus:ring-blue-500 outline-none dark:text-white transition-all">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-[10px] font-black uppercase text-slate-400 mb-1.5 ml-1">Confirmar Senha</label>
+                <div class="relative">
+                    <i class="fas fa-check-circle absolute left-4 top-3.5 text-slate-400"></i>
+                    <input type="password" id="confirmarSenha" required placeholder="••••••••"
+                        class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl py-3 pl-11 pr-4 text-sm focus:ring-2 focus:ring-blue-500 outline-none dark:text-white transition-all">
+                </div>
+            </div>
+
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-blue-500/30 transition-all flex items-center justify-center gap-2 mt-6">
+                ATUALIZAR SENHA <i class="fas fa-arrow-right text-xs"></i>
+            </button>
+        </form>
+    </div>
+
+    <script>
+        async function alterarSenha() {
+            const novaSenha = document.getElementById('novaSenha').value;
+            const confirmar = document.getElementById('confirmarSenha').value;
+            
+            const params = new URLSearchParams(window.location.search);
+            const token = params.get('token');
+
+            if (!token) {
+                alert("Token de recuperação não encontrado.");
+                return;
+            }
+
+            if (novaSenha !== confirmar) {
+                alert("As palavras-passe não coincidem.");
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/usuarios/alterar-senha', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: token, novaSenha: novaSenha })
+                });
+
+                if (res.ok) {
+                    alert("Senha alterada com sucesso! Podes agora fazer login.");
+                    window.location.href = "index.html";
+                } else {
+                    const msg = await res.text();
+                    alert("Erro: " + msg);
+                }
+            } catch (err) {
+                alert("Erro de rede. Verifica a tua ligação.");
+            }
+        }
+    </script>
+</body>
+</html>

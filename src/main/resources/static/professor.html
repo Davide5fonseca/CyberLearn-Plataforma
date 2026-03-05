@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt" class="h-full bg-gray-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberLearn - Painel do Professor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="h-full">
+    <div class="min-h-full">
+        <nav class="bg-indigo-600">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="flex h-16 items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <span class="text-white font-bold text-xl">CyberLearn</span>
+                        </div>
+                        <div class="ml-10 flex items-baseline space-x-4">
+                            <a href="dashboard.html" class="text-white hover:bg-indigo-500 px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+                            <a href="modulos.html" class="text-white hover:bg-indigo-500 px-3 py-2 rounded-md text-sm font-medium">Módulos</a>
+                            <a href="#" class="bg-indigo-700 text-white px-3 py-2 rounded-md text-sm font-medium" aria-current="page">Painel Professor</a>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <a href="perfil.html" class="text-white hover:text-gray-200">
+                            <i class="fas fa-user-circle text-2xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <header class="bg-white shadow">
+            <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                <h1 class="text-3xl font-bold tracking-tight text-gray-900">Gestão Académica</h1>
+            </div>
+        </header>
+
+        <main>
+            <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <div class="bg-white overflow-hidden shadow rounded-lg border border-gray-200">
+                        <div class="p-5">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 bg-indigo-500 rounded-md p-3">
+                                    <i class="fas fa-plus-circle text-white text-xl"></i>
+                                </div>
+                                <div class="ml-5 w-0 flex-1">
+                                    <h3 class="text-lg font-medium text-gray-900">Novo Conteúdo</h3>
+                                    <p class="text-sm text-gray-500">Crie novos módulos ou quizzes para os alunos.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 px-5 py-3">
+                            <a href="criar-modulo.html" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">Criar Módulo &rarr;</a>
+                        </div>
+                    </div>
+
+                    <div class="bg-white overflow-hidden shadow rounded-lg border border-gray-200">
+                        <div class="p-5">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 bg-green-500 rounded-md p-3">
+                                    <i class="fas fa-users text-white text-xl"></i>
+                                </div>
+                                <div class="ml-5 w-0 flex-1">
+                                    <h3 class="text-lg font-medium text-gray-900">Progresso dos Alunos</h3>
+                                    <p class="text-sm text-gray-500">Acompanhe as notas e participações.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 px-5 py-3">
+                            <a href="#" class="text-sm font-medium text-green-600 hover:text-green-500">Ver Relatórios &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

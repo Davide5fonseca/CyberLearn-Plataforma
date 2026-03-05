@@ -24,4 +24,13 @@ public class Utilizador {
     
     private LocalDateTime dataRegisto = LocalDateTime.now(); 
     private boolean ativo = true; 
+
+    private String resetToken;
+    private LocalDateTime resetTokenExpiry;
+
+    private String username;
+    private String password;
+    
+    // Este campo guardará o valor vindo do formulário (Estudante/Professor)
+    private String role; // "ESTUDANTE" ou "PROFESSOR"
 }

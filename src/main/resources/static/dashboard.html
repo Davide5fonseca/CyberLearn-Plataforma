@@ -14,42 +14,30 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <script>
-        // Inicialização do tema logo no carregamento
+        // Inicialização do tema
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         } else {
             document.documentElement.classList.remove('dark');
         }
 
-        // Função para alternar entre Dark e Light Mode
         function toggleDarkMode() {
             const html = document.documentElement;
-            if (html.classList.contains('dark')) {
-                html.classList.remove('dark');
-                localStorage.theme = 'light';
-            } else {
-                html.classList.add('dark');
-                localStorage.theme = 'dark';
-            }
+            html.classList.toggle('dark');
+            localStorage.theme = html.classList.contains('dark') ? 'dark' : 'light';
         }
 
-        // Função de Logout
         function executarLogout() {
-            localStorage.removeItem('userPoints');
-            localStorage.removeItem('userName');
-            localStorage.removeItem('userPerfil');
+            localStorage.clear();
             window.location.href = "index.html";
         }
     </script>
 
     <style>
-        /* Transições rápidas e desativação de scroll global */
         * { transition: background-color 0.2s ease, color 0.2s ease; }
         body { height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
         
-        /* Scrollbar personalizada para áreas internas */
         .custom-scroll::-webkit-scrollbar { width: 4px; }
-        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .dark .custom-scroll::-webkit-scrollbar-thumb { background: #475569; }
     </style>
@@ -93,8 +81,8 @@
                         <i class="fas fa-user text-blue-600 dark:text-blue-400"></i>
                     </div>
                     <div class="overflow-hidden">
-                        <h2 id="welcome-text" class="font-bold text-sm truncate dark:text-white">Utilizador</h2>
-                        <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Nível 1 • Iniciante</p>
+                        <h2 id="welcome-text" class="font-bold text-sm truncate dark:text-white">Explorador</h2>
+                        <p id="perfil-text" class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Aluno • Nível 1</p>
                     </div>
                 </div>
                 <a href="perfil.html" class="mt-4 block text-center py-2 bg-slate-50 dark:bg-slate-800 hover:bg-blue-600 hover:text-white rounded-lg text-[10px] font-bold transition-all">
@@ -105,17 +93,13 @@
             <div class="flex-1 bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col overflow-hidden">
                 <h3 class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">Conquistas</h3>
                 <div class="flex-1 overflow-y-auto custom-scroll space-y-2">
-                    <div class="flex items-center gap-3 p-2 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700 opacity-40">
-                        <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-[10px]">
-                            <i class="fas fa-lock"></i>
-                        </div>
+                    <div id="ach-1" class="flex items-center gap-3 p-2 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700 opacity-40 transition-opacity">
+                        <div class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center text-[10px]"><i class="fas fa-flag"></i></div>
                         <span class="text-[10px] font-bold">Iniciante Cyber</span>
                     </div>
-                    <div class="flex items-center gap-3 p-2 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700 opacity-40">
-                        <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-[10px]">
-                            <i class="fas fa-lock"></i>
-                        </div>
-                        <span class="text-[10px] font-bold">Defensor Digital</span>
+                    <div id="ach-2" class="flex items-center gap-3 p-2 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700 opacity-40 transition-opacity">
+                        <div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px]"><i class="fas fa-check"></i></div>
+                        <span class="text-[10px] font-bold">Mestre de Quiz</span>
                     </div>
                 </div>
             </div>
@@ -123,25 +107,33 @@
 
         <div class="col-span-9 grid grid-rows-5 gap-4">
             
-            <div class="row-span-2 bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm grid grid-cols-3 gap-6">
-                <div class="col-span-2 flex flex-col justify-center">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Progresso do Curso</h3>
-                    <div class="flex items-end justify-between mb-2">
-                        <span id="progress-percent" class="text-3xl font-black dark:text-white">0%</span>
-                        <span class="text-[10px] font-bold text-blue-500 uppercase">Módulos lidos 0/4</span>
+            <div class="row-span-2 bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm grid grid-cols-2 gap-8">
+                
+                <div class="flex flex-col justify-center">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="fas fa-book-reader text-blue-500 text-xs"></i>
+                        <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Módulos Lidos</h3>
                     </div>
-                    <div class="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
-                        <div id="progress-bar-fill" class="bg-blue-600 h-full w-0 transition-all duration-700"></div>
+                    <div class="flex items-end justify-between mb-2">
+                        <span id="module-percent" class="text-3xl font-black dark:text-white">0%</span>
+                        <span id="module-count" class="text-[10px] font-bold text-blue-500 uppercase">0/8</span>
+                    </div>
+                    <div class="w-full bg-slate-100 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                        <div id="module-bar" class="bg-blue-600 h-full w-0 transition-all duration-1000"></div>
                     </div>
                 </div>
-                <div class="flex flex-col justify-center gap-2 border-l border-slate-100 dark:border-slate-800 pl-6">
-                    <div class="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg">
-                        <p id="card-points" class="text-lg font-black text-blue-600 leading-none">0</p>
-                        <p class="text-[9px] uppercase font-bold text-slate-400 mt-1">Total XP</p>
+
+                <div class="flex flex-col justify-center border-l border-slate-100 dark:border-slate-800 pl-8">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="fas fa-tasks text-emerald-500 text-xs"></i>
+                        <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Quizzes Concluídos</h3>
                     </div>
-                    <div class="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg">
-                        <p id="card-medals" class="text-lg font-black text-purple-600 leading-none">0</p>
-                        <p class="text-[9px] uppercase font-bold text-slate-400 mt-1">Medalhas</p>
+                    <div class="flex items-end justify-between mb-2">
+                        <span id="quiz-percent" class="text-3xl font-black dark:text-white">0%</span>
+                        <span id="quiz-count" class="text-[10px] font-bold text-emerald-500 uppercase">0/4</span>
+                    </div>
+                    <div class="w-full bg-slate-100 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                        <div id="quiz-bar" class="bg-emerald-500 h-full w-0 transition-all duration-1000"></div>
                     </div>
                 </div>
             </div>
@@ -153,7 +145,7 @@
                     </div>
                     <div>
                         <h4 class="text-base font-bold dark:text-white leading-tight">Módulos de Estudo</h4>
-                        <p class="text-xs text-slate-400 mt-1">Guia completo para a tua proteção online.</p>
+                        <p class="text-xs text-slate-400 mt-1">Explora a biblioteca e aprende a proteger-te.</p>
                     </div>
                 </a>
 
@@ -163,7 +155,7 @@
                     </div>
                     <div>
                         <h4 class="text-base font-bold dark:text-white leading-tight">Desafios de Conhecimento</h4>
-                        <p class="text-xs text-slate-400 mt-1">Testa-te agora e sobe na classificação.</p>
+                        <p class="text-xs text-slate-400 mt-1">Ganha XP e medalhas completando quizzes.</p>
                     </div>
                 </a>
             </div>
@@ -172,29 +164,38 @@
 
     <script>
         function atualizarInterface() {
-            // Recuperar dados do localStorage
+            // 1. Dados Básicos
             const pontos = parseInt(localStorage.getItem('userPoints')) || 0;
             const nome = localStorage.getItem('userName') || "Explorador";
+            const perfil = localStorage.getItem('userPerfil') || "Aluno";
 
-            // Aplicar Nome e Pontos nos IDs correspondentes
-            const welcomeHeader = document.getElementById('welcome-text');
-            if (welcomeHeader) welcomeHeader.innerText = nome;
-
+            document.getElementById('welcome-text').innerText = nome;
+            document.getElementById('perfil-text').innerText = `${perfil} • Nível 1`;
             document.getElementById('nav-points').innerText = pontos;
-            document.getElementById('card-points').innerText = pontos;
 
-            // Lógica de Medalhas (1 medalha por cada 20 pontos)
-            const medalhas = Math.floor(pontos / 20);
-            const cardMedals = document.getElementById('card-medals');
-            if(cardMedals) cardMedals.innerText = medalhas;
+            // 2. Lógica de Módulos (Exemplo: 8 totais)
+            // Aqui podes criar uma chave 'modulesDone' no localStorage futuramente
+            const modulosLidos = parseInt(localStorage.getItem('modulesDone')) || 0;
+            const totalModulos = 8;
+            const modPercent = Math.floor((modulosLidos / totalModulos) * 100);
+            
+            document.getElementById('module-percent').innerText = `${modPercent}%`;
+            document.getElementById('module-count').innerText = `${modulosLidos}/${totalModulos}`;
+            document.getElementById('module-bar').style.width = `${modPercent}%`;
 
-            // Atualização da Barra de Progresso (Baseada numa meta de 50 pts)
-            const percentagem = Math.min((pontos / 50) * 100, 100);
-            const progressBar = document.getElementById('progress-bar-fill');
-            const progressText = document.getElementById('progress-percent');
+            // 3. Lógica de Quizzes (Exemplo: 4 totais)
+            // Aqui podes criar uma chave 'quizzesDone' no localStorage futuramente
+            const quizzesFeitos = parseInt(localStorage.getItem('quizzesDone')) || 0;
+            const totalQuizzes = 4;
+            const quizPercent = Math.floor((quizzesFeitos / totalQuizzes) * 100);
 
-            if (progressBar) progressBar.style.width = `${percentagem}%`;
-            if (progressText) progressText.innerText = `${Math.floor(percentagem)}%`;
+            document.getElementById('quiz-percent').innerText = `${quizPercent}%`;
+            document.getElementById('quiz-count').innerText = `${quizzesFeitos}/${totalQuizzes}`;
+            document.getElementById('quiz-bar').style.width = `${quizPercent}%`;
+
+            // 4. Desbloqueio Visual de Conquistas
+            if (modulosLidos > 0) document.getElementById('ach-1').classList.remove('opacity-40');
+            if (quizzesFeitos > 0) document.getElementById('ach-2').classList.remove('opacity-40');
         }
 
         window.onload = atualizarInterface;
