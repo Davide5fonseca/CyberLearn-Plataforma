@@ -26,7 +26,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             // 2. Permitir que o navegador carregue as páginas (a proteção será via JS abaixo)
             .requestMatchers(
                 "/dashboard.html", "/quiz.html", "/modulos.html", 
-                "/perfil.html", "/professor.html","/alunos.html"
+                "/perfil.html", "/professor.html","/alunos.html","/historico-acessos.html","/criar-modulo.html","/leitura.html"
             ).permitAll() 
 
             .anyRequest().authenticated()

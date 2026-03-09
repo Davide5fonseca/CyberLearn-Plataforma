@@ -106,29 +106,39 @@
     <script>
 document.getElementById('loginForm').addEventListener('submit', async function(e) {
     e.preventDefault();
+    
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-
+    
     try {
         const response = await fetch('/api/usuarios/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: email, passwordHash: password })
+            body: JSON.stringify({ 
+                email: email, 
+                passwordHash: password 
+            })
         });
 
         if (response.ok) {
             const user = await response.json();
-            localStorage.setItem('userName', user.nome);
-            localStorage.setItem('userEmail', user.email); // CRÍTICO: Guardar o email
-            localStorage.setItem('userPerfil', user.perfil);
             
-            // Redireciona conforme o perfil
-            window.location.href = (user.perfil === 'PROFESSOR') ? "professor.html" : "dashboard.html";
+            // Guarda os dados para as outras páginas
+            localStorage.setItem('userName', user.nome);
+            localStorage.setItem('userEmail', user.email);
+            localStorage.setItem('userPerfil', user.perfil);
+
+            // Redirecionamento real
+            if (user.perfil === 'PROFESSOR') {
+                window.location.href = "professor.html";
+            } else {
+                window.location.href = "dashboard.html";
+            }
         } else {
-            alert("Credenciais inválidas");
+            alert("Credenciais incorretas.");
         }
     } catch (error) {
-        alert("Erro ao ligar ao servidor.");
+        alert("Erro ao ligar ao servidor. Verifica se o Java está a correr.");
     }
 });
     </script>

@@ -3,9 +3,11 @@ package com.cyberlearn.plataforma.controller;
 import com.cyberlearn.plataforma.model.Utilizador;
 import com.cyberlearn.plataforma.model.ResultadoQuiz;
 import com.cyberlearn.plataforma.model.LogAcesso;
+import com.cyberlearn.plataforma.model.Modulo;
 import com.cyberlearn.plataforma.repository.UtilizadorRepository;
 import com.cyberlearn.plataforma.repository.ResultadoQuizRepository;
 import com.cyberlearn.plataforma.repository.LogAcessoRepository;
+import com.cyberlearn.plataforma.repository.ModuloRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -43,20 +45,33 @@ public class UserController {
     }
 
     // --- LOGIN COM REGISTO DE ACESSO ---
-    @PostMapping("/login")
+@PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Utilizador login) {
         Optional<Utilizador> userOpt = repo.findByEmail(login.getEmail());
         
         if(userOpt.isPresent() && encoder.matches(login.getPasswordHash(), userOpt.get().getPasswordHash())) {
             Utilizador user = userOpt.get();
             
-            // --- NOVA FUNÇÃO: Gravar log de acesso na base de dados ---
-            logRepo.save(new LogAcesso(user));
+            // GRAVAR O ACESSO NA BASE DE DADOS
+            logRepo.save(new LogAcesso(user)); // Certifique-se que LogAcesso tem este construtor
             
             user.setPasswordHash(null); 
             return ResponseEntity.ok(user);
         }
         return ResponseEntity.status(401).body("Credenciais inválidas");
+    }
+
+    // --- ENDPOINT PARA A TABELA DO PROFESSOR ---
+    @GetMapping("/ultimos-acessos")
+    public ResponseEntity<List<LogAcesso>> obterLogsAcesso() {
+        // Retorna todos os logs. O frontend no professor.html trata de inverter a ordem.
+        List<LogAcesso> logs = logRepo.findAll();
+        logs.forEach(log -> {
+            if (log.getUtilizador() != null) {
+                log.getUtilizador().setPasswordHash(null); // Segurança
+            }
+        });
+        return ResponseEntity.ok(logs);
     }
 
     // --- RECUPERAÇÃO DE SENHA ---
@@ -129,15 +144,26 @@ public class UserController {
         return ResponseEntity.ok(resultadoRepo.findAllByOrderByDataRealizacaoDesc());
     }
 
-@GetMapping("/ultimos-acessos")
-public ResponseEntity<List<LogAcesso>> obterLogsAcesso() {
-    // Procura todos os logs e garante que não enviamos senhas para o frontend
-    List<LogAcesso> logs = logRepo.findAll();
-    logs.forEach(log -> {
-        if (log.getUtilizador() != null) {
-            log.getUtilizador().setPasswordHash(null);
-        }
-    });
-    return ResponseEntity.ok(logs);
+    // No topo do UserController.java
+@Autowired private ModuloRepository moduloRepo;
+
+// --- CRIAR NOVO MÓDULO ---
+@PostMapping("/criar-modulo")
+public ResponseEntity<?> criarModulo(@RequestBody Modulo m) {
+    try {
+        moduloRepo.save(m);
+        return ResponseEntity.ok("Módulo criado com sucesso!");
+    } catch (Exception e) {
+        return ResponseEntity.internalServerError().body("Erro ao salvar módulo.");
+    }
+}
+
+// No UserController.java
+
+// --- LISTAR MÓDULOS PARA OS ALUNOS ---
+@GetMapping("/lista-modulos")
+public ResponseEntity<List<Modulo>> listarModulos() {
+    // Retorna todos os módulos ordenados pelos mais recentes
+    return ResponseEntity.ok(moduloRepo.findAll());
 }
 }

@@ -23,6 +23,6 @@ public class LogAcesso {
     // Construtor auxiliar
     public LogAcesso(Utilizador utilizador) {
         this.utilizador = utilizador;
-        this.dataHoraAcesso = LocalDateTime.now();
-    }
+        this.dataHoraAcesso = java.time.LocalDateTime.now();
+}
 }

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberLearn - Criar Conteúdo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { darkMode: 'class' }</script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-700 dark:text-slate-200 font-sans antialiased flex flex-col h-full">
+
+    <nav class="h-12 bg-white dark:bg-slate-900 shadow-sm px-6 flex justify-between items-center border-b border-slate-200 dark:border-slate-800">
+        <div class="flex items-center gap-2">
+            <div class="bg-blue-600 p-1.5 rounded shadow-lg shadow-blue-500/20"><i class="fas fa-plus text-white text-sm"></i></div>
+            <span class="font-bold text-sm tracking-tight dark:text-white">Criar Módulo</span>
+        </div>
+        <a href="professor.html" class="text-xs font-bold text-slate-400 hover:text-blue-600"><i class="fas fa-times mr-1"></i> Cancelar</a>
+    </nav>
+
+    <main class="flex-1 p-6 max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-6 overflow-hidden">
+        
+        <section class="flex flex-col gap-4 overflow-y-auto pr-2 custom-scroll">
+            <header>
+                <h2 class="text-xl font-black dark:text-white">Novo Conteúdo Académico</h2>
+                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mt-1">Editor de Módulos</p>
+            </header>
+
+            <div class="space-y-4 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div>
+                    <label class="text-[10px] font-black uppercase text-slate-400 mb-1 block">Título do Módulo</label>
+                    <input type="text" id="titulo" placeholder="Ex: Introdução ao Phishing" 
+                           class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+
+                <div>
+                    <label class="text-[10px] font-black uppercase text-slate-400 mb-1 block">Categoria</label>
+                    <select id="categoria" class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                        <option value="PHISHING">PHISHING</option>
+                        <option value="PASSWORDS">PASSWORDS</option>
+                        <option value="REDES">REDES SOCIAIS</option>
+                        <option value="MALWARE">MALWARE</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="text-[10px] font-black uppercase text-slate-400 mb-1 block">Conteúdo (HTML suportado)</label>
+                    <textarea id="conteudo" onkeyup="atualizarPreview()" placeholder="Escreve aqui a tua lição..." 
+                              class="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none h-64 resize-none font-mono"></textarea>
+                </div>
+
+                <button onclick="salvarModulo()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-xl text-xs uppercase tracking-widest shadow-lg shadow-blue-500/20 transition-all">
+                    Publicar Módulo <i class="fas fa-paper-plane ml-2"></i>
+                </button>
+            </div>
+        </section>
+
+        <section class="hidden lg:flex flex-col gap-4">
+            <header>
+                <h2 class="text-xl font-black dark:text-white">Pré-visualização</h2>
+                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mt-1">Como o aluno irá ver</p>
+            </header>
+
+            <div class="flex-1 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col">
+                <div class="h-10 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 flex items-center px-4 gap-2">
+                    <div class="w-2 h-2 rounded-full bg-red-400"></div>
+                    <div class="w-2 h-2 rounded-full bg-amber-400"></div>
+                    <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
+                </div>
+                <div id="preview" class="p-8 overflow-y-auto prose dark:prose-invert max-w-none text-sm leading-relaxed">
+                    <span class="text-slate-400 italic">O conteúdo aparecerá aqui...</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function atualizarPreview() {
+            const texto = document.getElementById('conteudo').value;
+            const preview = document.getElementById('preview');
+            preview.innerHTML = texto || '<span class="text-slate-400 italic">O conteúdo aparecerá aqui...</span>';
+        }
+
+        async function salvarModulo() {
+            const dados = {
+                titulo: document.getElementById('titulo').value,
+                categoria: document.getElementById('categoria').value,
+                conteudo: document.getElementById('conteudo').value
+            };
+
+            if(!dados.titulo || !dados.conteudo) {
+                alert("Por favor, preenche todos os campos!");
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/usuarios/criar-modulo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados)
+                });
+
+                if(res.ok) {
+                    alert("Módulo publicado com sucesso!");
+                    window.location.href = "professor.html";
+                }
+            } catch (err) {
+                alert("Erro ao guardar módulo.");
+            }
+        }
+
+        // Lógica de Tema
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberLearn - Histórico de Auditoria</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { darkMode: 'class' }</script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <script>
+        // Segurança: Apenas Professor pode aceder
+        if (localStorage.getItem('userPerfil') !== 'PROFESSOR') window.location.href = "index.html";
+
+        // Inicialização do Tema (Dark/Light)
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+
+        let todosOsLogs = [];
+
+        async function carregarHistorico() {
+            try {
+                const res = await fetch('/api/usuarios/ultimos-acessos');
+                if (!res.ok) throw new Error("Erro ao carregar dados");
+                
+                todosOsLogs = await res.json();
+                renderizarLogs(todosOsLogs.slice().reverse());
+            } catch (err) { 
+                console.error(err);
+                document.getElementById('tabela-completa').innerHTML = '<tr><td colspan="3" class="p-8 text-center text-red-500 font-bold">Erro ao ligar ao servidor.</td></tr>';
+            }
+        }
+
+        function renderizarLogs(lista) {
+            const corpo = document.getElementById('tabela-completa');
+            if (lista.length === 0) {
+                corpo.innerHTML = '<tr><td colspan="3" class="p-8 text-center text-slate-400 italic">Nenhum registo encontrado.</td></tr>';
+                return;
+            }
+
+            corpo.innerHTML = lista.map(log => `
+                <tr class="border-b border-slate-50 dark:border-slate-800/50 hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors">
+                    <td class="p-4">
+                        <div class="font-bold dark:text-white">${log.utilizador.nome}</div>
+                        <div class="text-[10px] text-slate-400">${log.utilizador.email}</div>
+                    </td>
+                    <td class="p-4">
+                        <span class="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded text-[9px] font-black uppercase tracking-tighter text-slate-500 dark:text-slate-400">
+                            ${log.utilizador.perfil}
+                        </span>
+                    </td>
+                    <td class="p-4 text-slate-400 text-right font-medium">
+                        ${new Date(log.dataHoraAcesso).toLocaleString('pt-PT')}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filtrarLogs() {
+            const termo = document.getElementById('filtroNome').value.toLowerCase();
+            const filtrados = todosOsLogs.filter(log => 
+                log.utilizador.nome.toLowerCase().includes(termo) || 
+                log.utilizador.email.toLowerCase().includes(termo)
+            );
+            renderizarLogs(filtrados.slice().reverse());
+        }
+
+        // Função para gerar PDF Profissional (Limpo, fundo branco)
+        function gerarPDFLogs() {
+            const termo = document.getElementById('filtroNome').value;
+            const subtitulo = termo ? `Filtro aplicado: "${termo}"` : "Relatório Completo de Atividade";
+            
+            const relatorio = document.createElement('div');
+            relatorio.innerHTML = `
+                <div style="padding: 40px; font-family: sans-serif; color: #1e293b; background: white;">
+                    <div style="border-bottom: 3px solid #2563eb; padding-bottom: 15px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h1 style="color: #2563eb; margin: 0; font-size: 24px; font-weight: 900;">CyberLearn Academy</h1>
+                            <p style="font-size: 11px; color: #64748b; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px;">Log de Auditoria de Acessos</p>
+                        </div>
+                        <div style="text-align: right; font-size: 10px; color: #64748b;">
+                            Emitido em: ${new Date().toLocaleString('pt-PT')}
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 25px; font-size: 12px; background: #f8fafc; padding: 15px; border-radius: 8px;">
+                        <p style="margin: 0;"><strong>Âmbito:</strong> ${subtitulo}</p>
+                        <p style="margin: 5px 0 0;"><strong>Total de Registos Exportados:</strong> ${todosOsLogs.length}</p>
+                    </div>
+
+                    <table style="width: 100%; border-collapse: collapse; font-size: 10px;">
+                        <thead>
+                            <tr style="background-color: #f1f5f9; text-align: left;">
+                                <th style="padding: 10px; border: 1px solid #e2e8f0;">Utilizador</th>
+                                <th style="padding: 10px; border: 1px solid #e2e8f0;">E-mail</th>
+                                <th style="padding: 10px; border: 1px solid #e2e8f0;">Perfil</th>
+                                <th style="padding: 10px; border: 1px solid #e2e8f0;">Data e Hora de Login</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${todosOsLogs.slice().reverse().map(log => `
+                                <tr>
+                                    <td style="padding: 10px; border: 1px solid #e2e8f0; font-weight: bold;">${log.utilizador.nome}</td>
+                                    <td style="padding: 10px; border: 1px solid #e2e8f0;">${log.utilizador.email}</td>
+                                    <td style="padding: 10px; border: 1px solid #e2e8f0;">${log.utilizador.perfil}</td>
+                                    <td style="padding: 10px; border: 1px solid #e2e8f0;">${new Date(log.dataHoraAcesso).toLocaleString('pt-PT')}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                    <div style="margin-top: 50px; font-size: 9px; color: #94a3b8; text-align: center; border-top: 1px solid #f1f5f9; padding-top: 20px;">
+                        Este documento é um registo eletrónico oficial da plataforma CyberLearn. Todos os acessos são monitorizados para segurança.
+                    </div>
+                </div>
+            `;
+
+            const opcoes = {
+                margin: 0,
+                filename: `Logs_CyberLearn_${new Date().toISOString().split('T')[0]}.pdf`,
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opcoes).from(relatorio).save();
+        }
+
+        window.onload = carregarHistorico;
+    </script>
+
+    <style>
+        * { transition: background-color 0.2s ease, color 0.2s ease; }
+        .custom-scroll::-webkit-scrollbar { width: 5px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .dark .custom-scroll::-webkit-scrollbar-thumb { background: #334155; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-700 dark:text-slate-200 font-sans antialiased flex flex-col h-full">
+    
+    <nav class="h-12 bg-white dark:bg-slate-900 shadow-sm px-6 flex justify-between items-center border-b border-slate-200 dark:border-slate-800 z-50">
+        <div class="flex items-center gap-2">
+            <div class="bg-blue-600 p-1.5 rounded shadow-lg shadow-blue-500/20"><i class="fas fa-shield-alt text-white text-sm"></i></div>
+            <span class="font-bold text-sm tracking-tight dark:text-white">CyberLearn Auditor</span>
+        </div>
+        <a href="professor.html" class="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-2 transition-colors">
+            <i class="fas fa-arrow-left"></i> Voltar ao Painel
+        </a>
+    </nav>
+
+    <main class="flex-1 p-6 max-w-5xl mx-auto w-full flex flex-col overflow-hidden">
+        
+        <header class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h2 class="text-xl font-black dark:text-white tracking-tight">Histórico de Acessos</h2>
+                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest mt-1">Registo de Auditoria de Sistema</p>
+            </div>
+            
+            <div class="flex items-center gap-3 w-full md:w-auto">
+                <button onclick="gerarPDFLogs()" 
+                        class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-2.5 rounded-xl text-slate-500 hover:text-red-600 hover:border-red-600 transition-all shadow-sm active:scale-95"
+                        title="Exportar PDF">
+                    <i class="fas fa-file-pdf"></i>
+                </button>
+
+                <div class="relative flex-1 md:flex-none">
+                    <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                    <input type="text" id="filtroNome" onkeyup="filtrarLogs()" placeholder="Procurar utilizador ou e-mail..." 
+                           class="pl-9 pr-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 outline-none w-full md:w-64 transition-all">
+                </div>
+            </div>
+        </header>
+
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden flex-1 flex flex-col">
+            <div class="overflow-y-auto custom-scroll flex-1">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-slate-50 dark:bg-slate-800/50 sticky top-0 z-10">
+                        <tr>
+                            <th class="p-4 text-[10px] font-black uppercase text-slate-400 tracking-widest border-b border-slate-100 dark:border-slate-800">Utilizador</th>
+                            <th class="p-4 text-[10px] font-black uppercase text-slate-400 tracking-widest border-b border-slate-100 dark:border-slate-800">Perfil</th>
+                            <th class="p-4 text-[10px] font-black uppercase text-slate-400 tracking-widest text-right border-b border-slate-100 dark:border-slate-800">Data e Hora</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabela-completa" class="text-xs">
+                        <tr>
+                            <td colspan="3" class="p-8 text-center text-slate-400">A sincronizar com a base de dados...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+</body>
+</html>
